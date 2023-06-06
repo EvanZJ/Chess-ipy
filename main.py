@@ -10,7 +10,10 @@ game_state = "main_menu"
 def main_menu():
     screen.fill((0, 0, 0))
     background = p.image.load("resource/images/background.jpg")
+    logo = p.image.load("resource/images/logo.png")
+    logo = p.transform.scale(logo, (int(logo.get_width() * 0.75), int(logo.get_height() * 0.75)))
     screen.blit(background, (0, 0))
+    screen.blit(logo, (720, 325))
     play_local = Button(100, 100, p.image.load("resource/images/play_now.png").convert_alpha(), 0.75)
     play_online = Button(100, 250, p.image.load("resource/images/play_online.png").convert_alpha(), 0.75)
     watch_game = Button(100, 400, p.image.load("resource/images/watch_match.png").convert_alpha(), 0.75)
