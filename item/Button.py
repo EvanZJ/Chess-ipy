@@ -5,7 +5,7 @@ class Button:
         self.image = p.transform.scale(self.image, (int(self.image.get_width() * scale), int(self.image.get_height() * scale)))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        self.clicked = False
+        self.clicked = True
         self.hovered = False
 
     def draw(self, screen):

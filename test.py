@@ -1,22 +1,9 @@
-import asyncio
-import chess
-import chess.engine
-
-async def main() -> None:
-    transport, engine = await chess.engine.popen_uci("engine/stockfish.exe")
-
-    board = chess.Board()
-    print(board.turn == chess.BLACK)
-    info = await engine.analyse(board, chess.engine.Limit(time=0.1))
-    print(info["score"])
-    # Score: PovScore(Cp(+20), WHITE)
-
-    board = chess.Board("r1bqkbnr/p1pp1ppp/1pn5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 2 4")
-    info = await engine.analyse(board, chess.engine.Limit(depth=20))
-    print(info["score"])
-    # Score: PovScore(Mate(+1), WHITE)
-
-    await engine.quit()
-
-asyncio.set_event_loop_policy(chess.engine.EventLoopPolicy())
-asyncio.run(main())
+arr = [["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
+        ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
+        ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
+        ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"],
+        ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"],
+        ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
+        ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+        ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]] 
+print(arr[0][1])

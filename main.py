@@ -20,13 +20,14 @@ game_state = "main_menu"
 #     result = engine.play(board.board, chess.engine.Limit(time=5))
 #     board.board.push(result.move)
 
+       
 def play_local() -> None:
     global game_state
     screen.fill((0, 0, 0))
     board = Board()
-    board.board = board.board.transform(chess.flip_horizontal)
-    board.board = board.board.transform(chess.flip_vertical)
-    board.board = board.board.transform(chess.flip_horizontal)
+    # board.board = board.board.transform(chess.flip_horizontal)
+    # board.board = board.board.transform(chess.flip_vertical)
+    # board.board = board.board.transform(chess.flip_horizontal)
     clock = p.time.Clock()
     # engine = chess.engine.SimpleEngine.popen_uci("engine/stockfish.exe")
     while not board.board.is_game_over():
@@ -44,13 +45,14 @@ def play_local() -> None:
         for event in p.event.get():
             if event.type == p.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    board.get_clicked_pos()
+                    board.get_piece_legal_moves()
+                    board.draw(screen)
             if event.type == p.QUIT:
                 game_state = "exit"
                 p.display.quit()
                 p.quit()
                 sys.exit()
-        time.sleep(1)
+        # time.sleep(120)
 
 def main_menu():
     p.event.pump()
