@@ -7,7 +7,6 @@ import asyncio
 import threading
 import tracemalloc
 import time
-tracemalloc.start()
 
 threads = []
 p.init()
@@ -22,7 +21,7 @@ game_state = "main_menu"
 
        
 def play_local() -> None:
-    global game_state
+    # global game_state
     screen.fill((0, 0, 0))
     board = Board()
     # board.board = board.board.transform(chess.flip_horizontal)
@@ -45,8 +44,18 @@ def play_local() -> None:
         for event in p.event.get():
             if event.type == p.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    board.get_piece_legal_moves()
-                    board.draw(screen)
+                    temp_uci = board.get_clicked_position()
+                    temp2 = board.index_2d(temp_uci) if temp_uci != None else None
+                    temp = temp2[0] * 8 + temp2[1] if temp2 != None else None
+                    print(temp)
+                    if(temp not in board.legal_move_highlighted):
+                        print("sini")
+                        board.get_piece_legal_moves(temp_uci)
+                        board.draw(screen)
+                    else : 
+                        board.move_piece(temp_uci)
+                        
+                        # board.board.move
             if event.type == p.QUIT:
                 game_state = "exit"
                 p.display.quit()
@@ -75,6 +84,7 @@ def main_menu():
         global game_state 
         if(buttons[0].clicked):
             game_state = "play_local"
+            # print(game_state)
             break
 
         if(buttons[2].clicked):
@@ -104,13 +114,14 @@ async def main() -> None:
         sys.exit()
     if(game_state == "main_menu"):
         p.display.update()
+        # print(game_state)
         main_menu()
     if(game_state == "play_local"):
         p.display.update()
         play_local()
         # asyncio.set_event_loop_policy(chess.engine.EventLoopPolicy())
         # asyncio.run(play_local())
-        print(game_state)
+        # print(game_state)
 
 asyncio.set_event_loop_policy(chess.engine.EventLoopPolicy())
 asyncio.run(main())

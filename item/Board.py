@@ -8,7 +8,7 @@ class Board:
         self.max_fps = 60
         self.images = {}
         self.board = chess.Board()
-        print(self.board)
+        # print(self.board)
         # self.board = self.board.transform(chess.flip_vertical)
         self.convert = {"P": "wp", "R": "wR", "N": "wN", "B": "wB", "Q": "wQ", "K": "wK", "p": "bp", "r": "bR", "n": "bN", "b": "bB", "q": "bQ", "k": "bK"}
         self.white_box_coordinate = [["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
@@ -27,7 +27,7 @@ class Board:
                                      ["h6", "g6", "f6", "e6", "d6", "c6", "b6", "a6"],
                                      ["h7", "g7", "f7", "e7", "d7", "c7", "b7", "a7"],
                                      ["h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8"]]
-        self.flipped = True
+        self.flipped = False
         self.legal_move_highlighted = []                  
         self.pieces = {}
         self.boxes = []
@@ -35,6 +35,7 @@ class Board:
         self.load_everything()
         self.box_clicked = None
         self.activated_box = None
+        self.last_activated = None
         
     def load_everything(self):
         pieces = ["wp", "wR", "wN", "wB", "wQ", "wK", "bp", "bR", "bN", "bB", "bQ", "bK"]
@@ -71,7 +72,7 @@ class Board:
                     p.draw.circle(screen, p.Color("grey"), (column * self.width // 8 + self.width // 16, row * self.height // 8 + self.height // 16), 10)
                     # screen.blit(surface, (0,0))
     
-    def get_clicked_pos(self):
+    def get_clicked_position(self):
         colors = [p.Color("white"), p.Color("purple")]
         mouse_pos = p.mouse.get_pos()
         for box in self.boxes:
@@ -107,9 +108,9 @@ class Board:
                 if v in x:
                     return (i, x.index(v))
     
-    def get_piece_legal_moves(self):
+    def get_piece_legal_moves(self, coordinate):
         # self.get_clicked_pos()
-        selected_uci = self.get_clicked_pos()
+        selected_uci = coordinate
         selected_square = chess.parse_square(selected_uci) if selected_uci is not None else None
         print(selected_square, self.activated_box)
         # print(self.get_clicked_pos(), self.box_clicked)
@@ -127,5 +128,20 @@ class Board:
                 # print(chess.square_name(move.to_square), self.index_2d(self.white_box_coordinate, chess.square_name(move.to_square)))
                 self.legal_move_highlighted.append(indexed)
         print(self.legal_move_highlighted)
+        self.last_activated = coordinate
+    
+    def move_piece(self, coordinate):
+        if self.last_activated is not None:
+            move = chess.Move.from_uci(self.last_activated + coordinate)
+            print(move)
+            self.board.push(move)
+            self.last_activated = None
+            self.box_clicked = None
+            self.activated_box = None
+            self.legal_move_highlighted = []
+            # self.box_colors = [p.Color("white"), p.Color("purple")]
+            return True
+        return False
+    
             
 
