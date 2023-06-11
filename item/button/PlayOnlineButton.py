@@ -1,4 +1,4 @@
-from item.T.Button import Button
+from item.Button import Button
 import pygame as p
 
 class PlayOnlineButton(Button):

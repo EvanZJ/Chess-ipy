@@ -1,24 +1,16 @@
 import pygame as p
-class Button:
-    def __init__(self, x, y, image, scale):
-        self.image = image
-        self.image = p.transform.scale(self.image, (int(self.image.get_width() * scale), int(self.image.get_height() * scale)))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-        self.clicked = True
-        self.hovered = False
+from item.GameObject import GameObject
 
-    def draw(self, screen):
-        action = False
-        pos = p.mouse.get_pos()
-        if self.rect.collidepoint(pos):
-            if p.mouse.get_pressed()[0] == 1 and not self.clicked:
-                self.clicked = True
-                action = True
-            if p.mouse.get_pressed()[0] == 0:
-                self.clicked = False
-            self.hovered = True
-        else:
-            self.hovered = False
-        screen.blit(self.image, self.rect)
-        return action
+class Button(GameObject):
+    def __init__(self, x : float, y : float, sprite: p.Surface, scale : float):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.sprite = sprite
+        self.scale_xy = scale
+
+        self.on_awake += self.__awake
+
+    def __awake(self):
+        self.move(self.x, self.y)
+        self.scale(int(self.sprite.get_width() * self.scale_xy), int(self.sprite.get_height() * self.scale_xy))
