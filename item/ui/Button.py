@@ -1,5 +1,5 @@
 import pygame as p
-from item.GameObject import GameObject
+from item.core.GameObject import GameObject
 
 class Button(GameObject):
     def __init__(self, x : float, y : float, sprite: p.Surface, scale : float):

@@ -1,4 +1,4 @@
-from item.GameObject import GameObject
+from item.core.GameObject import GameObject
 import chess
 import pygame as p
 

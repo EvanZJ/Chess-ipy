@@ -3,7 +3,7 @@ import pygame as p
 import sys
 import asyncio
 import chess.engine
-from item.GameObject import GameObject
+from item.core.GameObject import GameObject
 
 class Engine:
     def __init__(self, screen : p.Surface):
@@ -48,12 +48,15 @@ class Engine:
     async def __loop(self):
         running = True
         while running:
+            self.screen.fill((0, 0, 0))
             for event in p.event.get():
                 if event.type == p.QUIT:
                     running = False
                     p.display.quit()
                     p.quit()
                     sys.exit()
+                if event.type == p.KEYDOWN:
+                    self.__on_keyboard_down(p.key.get_pressed())
             self.__draw()
             self.__update()
             self.__end_frame()
@@ -61,12 +64,16 @@ class Engine:
     def __draw(self):
         for key, game_objects in sorted(self.ordered_game_objects.items()):
             for game_object in game_objects:
+                if not game_object.enabled:
+                    continue
                 game_object.on_draw()
         p.display.update()
 
     def __update(self):
         for game_objects in self.ordered_game_objects.values():
             for game_object in game_objects:
+                if not game_object.enabled:
+                    continue
                 pos = p.mouse.get_pos()
                 if game_object.collidepoint(pos):
                     game_object.on_hover()
@@ -107,3 +114,10 @@ class Engine:
         game_objects = self.ordered_game_objects_cache[new_order_layer]
         game_objects.append(game_object)
         self.ordered_game_objects_cache[new_order_layer] = game_objects
+
+    def __on_keyboard_down(self, keys_pressed : p.key.ScancodeWrapper):
+        for game_objects in self.ordered_game_objects.values():
+            for game_object in game_objects:
+                if not game_object.enabled:
+                    continue
+                game_object.on_keyboard_down(keys_pressed)

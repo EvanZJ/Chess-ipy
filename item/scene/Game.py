@@ -1,6 +1,6 @@
 import pygame as p
-from item.Board import Board
-from item.GameObject import GameObject
+from item.chess.Board import Board
+from item.core.GameObject import GameObject
 
 class Game(GameObject):
     def __init__(self):

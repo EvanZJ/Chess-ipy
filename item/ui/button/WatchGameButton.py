@@ -1,4 +1,4 @@
-from item.Button import Button
+from item.ui.Button import Button
 import pygame as p
 
 class WatchGameButton(Button):

@@ -1,6 +1,6 @@
 import pygame as p
 
-from item.Event import Event
+from item.core.Event import Event
 from typing import TypeVar
 
 class GameObject:
@@ -11,6 +11,7 @@ class GameObject:
         self.screen: p.Surface
         self.rect: p.Rect = None
         self.order_layer: int = 0
+        self.enabled : bool = True
         
         self.on_awake = Event()
         self.on_draw = Event()
@@ -23,6 +24,7 @@ class GameObject:
         self.on_mouse_up = Event()
         self.on_load = Event()
         self.on_change_order_layer = Event()
+        self.on_keyboard_down = Event()
         
         self.on_awake += self.__awake
         self.on_draw += self.__draw
@@ -59,8 +61,8 @@ class GameObject:
         self.order_layer = new_order_layer
         self.on_change_order_layer(self, old_order_layer, new_order_layer)
 
-    def destroy(self, game_object : 'GameObject'):
-        self.on_destroy(game_object)
+    def destroy(self):
+        self.on_destroy(self)
 
     def collidepoint(self, x_y) -> bool:
         if(self.rect is not None):

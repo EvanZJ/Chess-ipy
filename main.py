@@ -1,15 +1,16 @@
 import pygame as p
 
-from item.Button import Button
-from item.Board import Board
+from item.ui.Button import Button
+from item.chess.Board import Board
 import sys
 
 import threading
 import tracemalloc
 import time
 
-from item.Engine import Engine
+from item.core.Engine import Engine
 from item.scene.MainMenu import MainMenu
+
 tracemalloc.start()
 
 threads = []
