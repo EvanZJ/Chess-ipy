@@ -52,6 +52,7 @@ class Board:
     def draw(self, screen):
         self.draw_board(screen)
         self.draw_pieces(screen)
+        self.draw_legal_move(screen)
 
     def draw_board(self, screen):
         for row in range(8):
@@ -67,10 +68,12 @@ class Board:
                         screen.blit(self.images[self.convert[piece.symbol()]], p.Rect((7-column) * self.width // 8, row * self.height // 8, self.width // 8, self.height // 8))
                     else:
                         screen.blit(self.images[self.convert[piece.symbol()]], p.Rect(column * self.width // 8, (7-row) * self.height // 8, self.width // 8, self.height // 8))
+    
+    def draw_legal_move(self, screen):
+        for row in range(8):
+            for column in range(8):
                 if int(row*8 + column) in self.legal_move_highlighted :
-                    # surface = p.Surface((self.width // 8, self.height // 8), p.SRCALPHA)
-                    p.draw.circle(screen, p.Color("grey"), (column * self.width // 8 + self.width // 16, row * self.height // 8 + self.height // 16), 10)
-                    # screen.blit(surface, (0,0))
+                    p.draw.circle(screen, p.Color("red"), (column * self.width // 8 + self.width // 16, row * self.height // 8 + self.height // 16), 10)
     
     def get_clicked_position(self):
         colors = [p.Color("white"), p.Color("purple")]
@@ -109,14 +112,9 @@ class Board:
                     return (i, x.index(v))
     
     def get_piece_legal_moves(self, coordinate):
-        # self.get_clicked_pos()
         selected_uci = coordinate
         selected_square = chess.parse_square(selected_uci) if selected_uci is not None else None
         print(selected_square, self.activated_box)
-        # print(self.get_clicked_pos(), self.box_clicked)
-        # selected_square = chess.parse_square(self.get_clicked_pos())
-        # print(selected_square)
-        # selected_piece = self.board.piece_at(selected_square)
         legal_moves = self.board.legal_moves
         self.legal_move_highlighted = []
         print(legal_moves)
@@ -139,7 +137,6 @@ class Board:
             self.box_clicked = None
             self.activated_box = None
             self.legal_move_highlighted = []
-            # self.box_colors = [p.Color("white"), p.Color("purple")]
             return True
         return False
     

@@ -24,25 +24,26 @@ def play_local() -> None:
     # global game_state
     screen.fill((0, 0, 0))
     board = Board()
+    board_temp = Board()
+    get_redo = False
+    prev_move = []
+    
     # board.board = board.board.transform(chess.flip_horizontal)
     # board.board = board.board.transform(chess.flip_vertical)
     # board.board = board.board.transform(chess.flip_horizontal)
     clock = p.time.Clock()
     # engine = chess.engine.SimpleEngine.popen_uci("engine/stockfish.exe")
     while not board.board.is_game_over():
-
-        # board.board = board.board.transform(chess.flip_horizontal)
-        board.draw(screen)
-        p.display.update()
-
         clock.tick(board.max_fps)
+        if get_redo == True:
+            board_temp.draw(screen)
+        else :
+            board.draw(screen)
         p.display.update()
-        # print(board.board)
-        board.draw(screen)
         # board.board = board.board.transform(chess.flip_vertical)
         # board.board = board.board.transform(chess.flip_horizontal)
         for event in p.event.get():
-            if event.type == p.MOUSEBUTTONDOWN:
+            if event.type == p.MOUSEBUTTONDOWN and get_redo == False:
                 if event.button == 1:
                     temp_uci = board.get_clicked_position()
                     temp2 = board.index_2d(temp_uci) if temp_uci != None else None
@@ -51,11 +52,35 @@ def play_local() -> None:
                     if(temp not in board.legal_move_highlighted):
                         print("sini")
                         board.get_piece_legal_moves(temp_uci)
-                        board.draw(screen)
+                        # board.draw(screen)
                     else : 
+                        board_temp.last_activated = board.last_activated
                         board.move_piece(temp_uci)
-                        
-                        # board.board.move
+                        print(board_temp.last_activated, board.last_activated)
+                        board_temp.move_piece(temp_uci)
+                        print(board.board)
+                        print("-------------------")
+                        print(board_temp.board)
+            # get left arrow key event
+            if event.type == p.KEYDOWN:
+                if event.key == p.K_LEFT:
+                    if len(board_temp.board.move_stack) == 0:
+                        continue
+                    else:
+                        get_redo = True
+                        move = board_temp.board.pop()
+                        prev_move.append(move)
+                        print(board.board)
+                        print("-------------------")
+                        print(board_temp.board)
+                if event.key == p.K_RIGHT and get_redo == True:
+                    move = prev_move.pop()
+                    board_temp.board.push(move)
+                    print(board.board)
+                    print("-------------------")
+                    print(board_temp.board)
+                    if len(prev_move) == 0:
+                        get_redo = False
             if event.type == p.QUIT:
                 game_state = "exit"
                 p.display.quit()
