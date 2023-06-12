@@ -25,7 +25,9 @@ class Board(GameObject):
                                      ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
                                      ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
                                      ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]]
-        
+        info_object = p.display.Info()
+        self.current_width = info_object.current_w
+        self.current_height = info_object.current_h
         self.on_awake += self.__awake
         self.on_keyboard_down += self.__on_keyboard_down
 
@@ -57,7 +59,12 @@ class Board(GameObject):
 
     def __instantiate_tile(self, row : int, column : int) -> Tile:
         color = self.colors[((row + column) % 2)]
-        box = p.Rect(column * self.width // 8, row * self.height // 8, self.width // 8, self.height // 8)
+        box = p.Rect(
+            (column * self.width // 8) + ((self.current_width - self.width) / 2),
+            (row * self.height // 8) + ((self.current_height - self.height) / 2),
+            self.width // 8,
+            self.height // 8
+        )
         square = chess.parse_square(self.white_box_coordinate[row][column])
         tile = self.instantiate(Tile(color, box, square))
         tile.on_select += self.__on_select_tile
