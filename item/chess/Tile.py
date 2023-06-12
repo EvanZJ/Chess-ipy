@@ -47,9 +47,11 @@ class Tile(GameObject):
         return deattached_piece
     
     def select(self):
-        self.color = p.Color("yellow")
         self.on_select(self)
         self.set_legal_move(False)
+
+    def highlight(self):
+        self.color = p.Color("yellow")
 
     def deselect(self):
         self.color = self.original_color
