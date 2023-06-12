@@ -82,6 +82,11 @@ class Board(GameObject):
             tile.attach_piece(piece_instance)
 
     def __on_select_tile(self, selected_tile : Tile):
+        if not self.__can_interact_with_board():
+            return
+
+        selected_tile.highlight()
+
         if selected_tile.is_legal_move():
             self.__move_piece(selected_tile)
 
@@ -104,4 +109,6 @@ class Board(GameObject):
         move_piece = chess.Move(self.current_selected_tile.square, to_tile.square)
         self.board.push(move_piece)
         self.__redraw()
-        self.move_stack.clear()
+
+    def __can_interact_with_board(self) -> bool:
+        return len(self.move_stack) <= 0
