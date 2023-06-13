@@ -39,6 +39,7 @@ class Board(GameObject):
         self.current_height = infoObject.current_h
         self.on_awake += self.__awake
         self.on_keyboard_down += self.__on_keyboard_down
+        self.relative_value = 0
 
     def __awake(self):
         for row in range(8):
@@ -69,6 +70,9 @@ class Board(GameObject):
             tile.deselect()
         for square, piece in self.board.piece_map().items():
             self.__instantiate_piece(self.tiles_cache[square], piece)
+        self.relative_value = self.__get_relative_value()
+        print(self.relative_value)
+        
 
     def __instantiate_tile(self, row : int, column : int) -> Tile:
         color = self.colors[((row + column) % 2)]
@@ -130,3 +134,30 @@ class Board(GameObject):
 
     def __can_interact_with_board(self) -> bool:
         return len(self.move_stack) <= 0
+    
+    def __get_relative_value(self) -> int :
+        relative_value = 0
+        for tile in self.tiles_cache.values():
+            piece = tile.piece
+            if piece is not None:
+                if piece.piece.color == chess.WHITE:
+                    relative_value += self.__get_piece_value(piece)
+                else:
+                    relative_value -= self.__get_piece_value(piece)
+        return relative_value
+
+    def __get_piece_value(self, piece : chess.Piece) -> int:
+        if piece.piece.piece_type == chess.PAWN:
+            return 1
+        elif piece.piece.piece_type == chess.KNIGHT:
+            return 3
+        elif piece.piece.piece_type == chess.BISHOP:
+            return 3
+        elif piece.piece.piece_type == chess.ROOK:
+            return 5
+        elif piece.piece.piece_type == chess.QUEEN:
+            return 9
+        elif piece.piece.piece_type == chess.KING:
+            return 0
+        else:
+            return 0
