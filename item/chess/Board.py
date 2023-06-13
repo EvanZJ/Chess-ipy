@@ -16,6 +16,7 @@ class Board(GameObject):
         self.tiles : list[Tile] = []
         self.tiles_cache : dict[chess.Square, Tile] = {}
         self.current_selected_tile : Tile = None
+        self.last_move_tile : Tile = []
         self.move_stack : deque[chess.Move] = deque()
         self.white_box_coordinate = [["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
                                      ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
@@ -25,6 +26,14 @@ class Board(GameObject):
                                      ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
                                      ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
                                      ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]]
+        self.black_box_coordinate = [["h1", "g1", "f1", "e1", "d1", "c1", "b1", "a1"],
+                                     ["h2", "g2", "f2", "e2", "d2", "c2", "b2", "a2"],
+                                     ["h3", "g3", "f3", "e3", "d3", "c3", "b3", "a3"],
+                                     ["h4", "g4", "f4", "e4", "d4", "c4", "b4", "a4"],
+                                     ["h5", "g5", "f5", "e5", "d5", "c5", "b5", "a5"],
+                                     ["h6", "g6", "f6", "e6", "d6", "c6", "b6", "a6"],
+                                     ["h7", "g7", "f7", "e7", "d7", "c7", "b7", "a7"],
+                                     ["h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8"]]
         infoObject = p.display.Info()
         self.current_width = infoObject.current_w
         self.current_height = infoObject.current_h
@@ -47,13 +56,17 @@ class Board(GameObject):
             if len(self.move_stack) > 0:
                 self.board.push(self.move_stack.pop())
                 self.__redraw()
+        # if keys_pressed[p.K_f]:
+            
 
     def __redraw(self):
         for tile in self.tiles:
-            tile.deselect()
             piece = tile.deattach_piece()
             if piece is not None:
                 piece.destroy()
+            if tile in self.last_move_tile:
+                continue
+            tile.deselect()
         for square, piece in self.board.piece_map().items():
             self.__instantiate_piece(self.tiles_cache[square], piece)
 
@@ -94,6 +107,8 @@ class Board(GameObject):
         for tile in self.tiles:
             if(tile == selected_tile):
                 continue
+            if tile in self.last_move_tile:
+                continue
             tile.deselect()
         for tile in self.__get_legal_move(selected_tile):
             tile.set_legal_move(True)
@@ -107,6 +122,9 @@ class Board(GameObject):
     
     def __move_piece(self, to_tile : Tile):
         move_piece = chess.Move(self.current_selected_tile.square, to_tile.square)
+        self.last_move_tile.clear()
+        self.last_move_tile.append(self.current_selected_tile)
+        self.last_move_tile.append(to_tile)
         self.board.push(move_piece)
         self.__redraw()
 
