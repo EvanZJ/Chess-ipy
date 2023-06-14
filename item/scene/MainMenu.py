@@ -4,6 +4,7 @@ from item.ui.button.PlayLocalButton import PlayLocalButton
 from item.ui.button.PlayOnlineButton import PlayOnlineButton
 from item.ui.button.WatchGameButton import WatchGameButton
 from item.ui.button.QuitButton import QuitButton
+from item.ui.popup.NotificationFinished import NotificationFinished
 from item.scene.Game import Game
 
 class MainMenu(GameObject):
@@ -28,7 +29,9 @@ class MainMenu(GameObject):
         self.screen.blit(self.logo, (720, 325))
 
     def play_local(self):
-        self.load(Game())
+        current_game = Game()
+        self.load(current_game)
+        self.instantiate(NotificationFinished()) if current_game.is_finished else None
 
 
 

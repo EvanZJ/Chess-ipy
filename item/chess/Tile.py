@@ -21,6 +21,7 @@ class Tile(GameObject):
         self.on_awake += self.__awake
         self.on_draw += self.__draw
         self.on_mouse_down += self.select
+        self.on_destroy += self.__destroy
 
     def __awake(self):
         self.legal_move_circle = self.instantiate(LegalMoveCircle(self.rect))
@@ -58,7 +59,21 @@ class Tile(GameObject):
         self.set_legal_move(False)
 
     def set_legal_move(self, value : bool):
+        if self.legal_move_circle is None:
+            return
         self.legal_move_circle.enabled = value
 
     def is_legal_move(self) -> bool:
         return self.legal_move_circle.enabled
+    
+    def destroy_piece(self):
+        piece = self.deattach_piece()
+        if piece is not None:
+            piece.destroy()
+
+    def __destroy(self, game_object : GameObject):
+        self.deselect()
+        self.destroy_piece()
+        if self.legal_move_circle is not None:
+            self.legal_move_circle.destroy()
+            self.legal_move_circle = None

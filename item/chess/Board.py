@@ -40,6 +40,9 @@ class Board(GameObject):
         self.on_awake += self.__awake
         self.on_keyboard_down += self.__on_keyboard_down
         self.relative_value = 0
+        self.flipped : bool = False
+        self.finished : bool = False
+        # self.on_update += self.__update
 
     def __awake(self):
         for row in range(8):
@@ -57,22 +60,35 @@ class Board(GameObject):
             if len(self.move_stack) > 0:
                 self.board.push(self.move_stack.pop())
                 self.__redraw()
-        # if keys_pressed[p.K_f]:
+        if keys_pressed[p.K_f]:
+            print('sini')
+            self.__flip_board()
+            # self.__redraw()
             
 
     def __redraw(self):
+        # print("redraw")
         for tile in self.tiles:
-            piece = tile.deattach_piece()
-            if piece is not None:
-                piece.destroy()
-            if tile in self.last_move_tile:
-                continue
-            tile.deselect()
-        for square, piece in self.board.piece_map().items():
-            self.__instantiate_piece(self.tiles_cache[square], piece)
+            tile.destroy()
+        self.tiles_cache.clear()
+        self.tiles.clear()
+        for row in range(8):
+            for column in range(8):
+                tile = self.__instantiate_tile(row, column)
+                self.tiles.append(tile)
+                self.tiles_cache[tile.square] = tile
+
+                piece = self.board.piece_at(tile.square)
+                
+                if piece is not None:
+                    self.__instantiate_piece(tile, piece)
+
         self.relative_value = self.__get_relative_value()
+        self.finished = self.board.is_game_over()
         print(self.relative_value)
         
+        # for square in self.last_move_tile:
+        #     self.tiles_cache[square].color = p.Color("yellow")
 
     def __instantiate_tile(self, row : int, column : int) -> Tile:
         color = self.colors[((row + column) % 2)]
@@ -82,8 +98,13 @@ class Board(GameObject):
             self.width // 8,
             self.height // 8
         )
-        square = chess.parse_square(self.white_box_coordinate[row][column])
+        
+        square = chess.parse_square(self.white_box_coordinate[row][column]) if not self.flipped else chess.parse_square(self.black_box_coordinate[row][column])
+        if square in self.last_move_tile:
+            color = p.Color("green")
+
         tile = self.instantiate(Tile(color, box, square))
+
         tile.on_select += self.__on_select_tile
         self.tiles.append(tile)
         self.tiles_cache[square] = tile
@@ -126,9 +147,13 @@ class Board(GameObject):
     
     def __move_piece(self, to_tile : Tile):
         move_piece = chess.Move(self.current_selected_tile.square, to_tile.square)
+
+        if self.__is_promotion(self.current_selected_tile.piece, move_piece):
+            move_piece.promotion = chess.QUEEN
+            
         self.last_move_tile.clear()
-        self.last_move_tile.append(self.current_selected_tile)
-        self.last_move_tile.append(to_tile)
+        self.last_move_tile.append(self.current_selected_tile.square)
+        self.last_move_tile.append(to_tile.square)
         self.board.push(move_piece)
         self.__redraw()
 
@@ -161,3 +186,15 @@ class Board(GameObject):
             return 0
         else:
             return 0
+        
+    def __flip_board(self):
+        self.flipped = not self.flipped
+        self.__redraw()
+
+    def __is_promotion(self, piece : Piece, move : chess.Move) -> bool:
+        last_rank = 7 if self.board.turn == chess.WHITE else 0
+        if piece.get_piece_type() != chess.PAWN:
+            return False
+        return chess.square_rank(move.to_square) == last_rank
+    
+    
