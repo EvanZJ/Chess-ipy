@@ -29,6 +29,8 @@ class GameObject:
         self.on_awake += self.__awake
         self.on_draw += self.__draw
 
+        # print(self.on_draw)
+
     def __awake(self):
         if(self.sprite is not None):
             self.rect = self.sprite.get_rect()

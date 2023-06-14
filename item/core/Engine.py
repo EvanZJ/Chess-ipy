@@ -38,7 +38,7 @@ class Engine:
 
         self.mouse_down = False
         self.screen.fill((0, 0, 0))
-
+        # print('sini')
         for game_objects in self.ordered_game_objects.values():
             for game_object in game_objects:
                 print(game_object.__class__)

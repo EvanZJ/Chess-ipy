@@ -10,6 +10,6 @@ class Event(object):
         self.__eventhandlers.remove(handler)
         return self
  
-    def __call__(self, *args, **keywargs):
+    def __call__(self, *args, **kwargs):
         for eventhandler in self.__eventhandlers:
-            eventhandler(*args, **keywargs)
+            eventhandler(*args, **kwargs)
