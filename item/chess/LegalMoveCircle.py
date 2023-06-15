@@ -6,6 +6,7 @@ class LegalMoveCircle(GameObject):
         super().__init__()
 
         self.rect = rect
+        self.block_raycast = False
 
         self.on_draw += self.__draw
 

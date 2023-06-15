@@ -12,6 +12,7 @@ class GameObject:
         self.rect: p.Rect = None
         self.order_layer: int = 0
         self.enabled : bool = True
+        self.block_raycast : bool = True
         
         self.on_awake = Event()
         self.on_draw = Event()
@@ -25,6 +26,8 @@ class GameObject:
         self.on_load = Event()
         self.on_change_order_layer = Event()
         self.on_keyboard_down = Event()
+        self.on_enable = Event()
+        self.on_disable = Event()
         
         self.on_awake += self.__awake
         self.on_draw += self.__draw
@@ -49,7 +52,8 @@ class GameObject:
         self.rect.height = height
 
     def move(self, x : float, y : float):
-        self.rect.topleft = (x, y)
+        if isinstance(self.rect, p.Rect):
+            self.rect.topleft = (x, y)
 
     def instantiate(self, game_object : T) -> T:
         self.on_instantiate(game_object)
@@ -70,3 +74,10 @@ class GameObject:
         if(self.rect is not None):
             return self.rect.collidepoint(x_y)
         return False
+    
+    def set_enable(self, value : bool):
+        self.enabled = value
+        if(self.enabled == True):
+            self.on_enable()
+        else:
+            self.on_disable()
