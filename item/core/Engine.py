@@ -1,5 +1,5 @@
 import time
-from typing import Literal
+from typing import Callable, Literal
 import pygame as p
 import sys
 import asyncio
@@ -9,9 +9,13 @@ from item.core.GameObject import GameObject
 class Engine:
     def __init__(self, screen : p.Surface):
         self.screen : p.Surface = screen
+        self.scenes : dict[int, Callable[[], None]] = {}
         self.ordered_game_objects: dict[int, list[GameObject]] = {}
         self.ordered_game_objects_cache: dict[int, list[GameObject]] = {}
         self.mouse_down : bool = False
+    
+    def set_scenes(self, scenes : dict[int, Callable[[], None]]):
+        self.scenes = scenes
 
     def run(self):
         asyncio.set_event_loop_policy(chess.engine.EventLoopPolicy())
@@ -23,7 +27,7 @@ class Engine:
         self.ordered_game_objects_cache[game_object.order_layer].append(game_object)
         game_object.screen = self.screen
         game_object.on_instantiate += self.instantiate
-        game_object.on_load += self.load
+        game_object.on_load_scene += self.load_scene
         game_object.on_destroy += self.__destroy
         game_object.on_change_order_layer += self.__change_order_layer
         game_object.on_awake()
@@ -45,6 +49,14 @@ class Engine:
                 print(game_object.__class__)
 
         self.instantiate(game_object)
+
+    def load_scene(self, scene_id : int):
+        if not self.scenes:
+            return
+        if not self.scenes.__contains__(scene_id):
+            return
+        
+        self.scenes[scene_id]()
 
     async def __loop(self):
         running = True
@@ -94,7 +106,7 @@ class Engine:
             game_objects.remove(game_object)
             game_object.on_destroy(game_object)
             game_object.on_instantiate -= self.instantiate
-            game_object.on_load -= self.load
+            game_object.on_load_scene -= self.load_scene
             game_object.on_destroy -= self.__destroy
             game_object.on_change_order_layer -= self.__change_order_layer
 
@@ -138,14 +150,3 @@ class Engine:
                         self.mouse_down = False
                         game_object.on_mouse_up()
                         return
-                    # if self.mouse_down != num_buttons[0]:
-                    #     if self.mouse_down == False:
-                    #         print(str(game_object) +  " mousedown")
-                    #         self.mouse_down = True
-                    #         game_object.on_mouse_down()
-                    #         return
-                    #     else:
-                    #         print(str(game_object) +  " mouseup")
-                    #         self.mouse_down = False
-                    #         game_object.on_mouse_up()
-                    #         return

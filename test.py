@@ -32,3 +32,18 @@ white_box_coordinate = [["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
 board.piece_map()
 
 print(white_box_coordinate[0][1])
+
+# my_dict = {
+#     'key1': lambda: print('Lambda function 1 called'),
+#     'key2': lambda: print('Lambda function 2 called'),
+#     'key3': lambda: print('Lambda function 3 called')
+# }
+
+# # Call the lambda function associated with 'key1'
+# my_dict['key1']()  # Output: Lambda function 1 called
+
+# # Call the lambda function associated with 'key2'
+# my_dict['key2']()  # Output: Lambda function 2 called
+
+# # Call the lambda function associated with 'key3'
+# my_dict['key3']()  # Output: Lambda function 3 called

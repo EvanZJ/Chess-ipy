@@ -51,7 +51,7 @@ class Board(GameObject):
                 piece = self.board.piece_at(tile.square)
                 self.__instantiate_piece(tile, piece)
 
-    def __on_keyboard_down(self, event : p.key.ScancodeWrapper):
+    def __on_keyboard_down(self, event : p.event.Event):
         if event.key == p.K_LEFT:
             if len(self.board.move_stack) > 0:
                 self.move_stack.append(self.board.pop())
