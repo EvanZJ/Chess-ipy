@@ -57,7 +57,8 @@ class Engine:
                     p.quit()
                     sys.exit()
                 if event.type == p.KEYDOWN:
-                    self.__on_keyboard_down(p.key.get_pressed())
+                    # self.__on_keyboard_down(p.key.get_pressed())
+                    self.__on_keyboard_down(event)
                 if event.type == p.MOUSEBUTTONDOWN or event.type == p.MOUSEBUTTONUP:
                     self.__on_mouse(p.mouse.get_pressed(), event.type)
             self.__draw()
@@ -111,12 +112,12 @@ class Engine:
         game_objects.append(game_object)
         self.ordered_game_objects_cache[new_order_layer] = game_objects
 
-    def __on_keyboard_down(self, keys_pressed : p.key.ScancodeWrapper):
+    def __on_keyboard_down(self, event : p.event.Event):
         for game_objects in self.ordered_game_objects.values():
             for game_object in game_objects:
                 if not game_object.enabled:
                     continue
-                game_object.on_keyboard_down(keys_pressed)
+                game_object.on_keyboard_down(event)
 
     def __on_mouse(self, num_buttons: Literal[3], event_type : int):
          pos = p.mouse.get_pos()
