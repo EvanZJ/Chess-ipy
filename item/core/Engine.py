@@ -1,5 +1,5 @@
 import time
-from typing import Callable, Literal
+from typing import Literal, Type
 import pygame as p
 import sys
 import asyncio
@@ -7,15 +7,12 @@ import chess.engine
 from item.core.GameObject import GameObject
 
 class Engine:
-    def __init__(self, screen : p.Surface):
+    def __init__(self, screen : p.Surface, scenes : dict[int, Type[GameObject]]):
         self.screen : p.Surface = screen
-        self.scenes : dict[int, Callable[[], None]] = {}
+        self.scenes : dict[int, Type[GameObject]] = scenes
         self.ordered_game_objects: dict[int, list[GameObject]] = {}
         self.ordered_game_objects_cache: dict[int, list[GameObject]] = {}
         self.mouse_down : bool = False
-    
-    def set_scenes(self, scenes : dict[int, Callable[[], None]]):
-        self.scenes = scenes
 
     def run(self):
         asyncio.set_event_loop_policy(chess.engine.EventLoopPolicy())
@@ -56,7 +53,7 @@ class Engine:
         if not self.scenes.__contains__(scene_id):
             return
         
-        self.scenes[scene_id]()
+        self.load(self.scenes[scene_id]())
 
     async def __loop(self):
         running = True

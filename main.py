@@ -23,13 +23,11 @@ screen = p.display.set_mode((0, 0), p.FULLSCREEN)
 screen.set_alpha()
 p.display.set_caption("Chess-ipy")
 
-engine = Engine(screen)
-
-scenes : dict[int, Callable[[], None]] = {
-    0: lambda: engine.load(MainMenu()),
-    1: lambda: engine.load(Game())
+scenes = {
+    0: MainMenu,
+    1: Game
 }
-engine.set_scenes(scenes)
-engine.load_scene(0)
 
+engine = Engine(screen, scenes)
+engine.load_scene(0)
 engine.run()
