@@ -15,17 +15,14 @@ class TextButton(UI):
             self.sprite.fill(color, rect)
 
         self.on_awake += self.__awake
-        self.on_update += self.__update
         self.on_enable += self.__on_enable
         self.on_disable += self.__on_disable
 
     def __awake(self):
         if self.text_str and isinstance(self.rect, p.Rect):
             self.text = self.instantiate(Text(self.text_str, self.text_size), self)
-
-    def __update(self):
-        if isinstance(self.text, Text):
-            self.text.anchor(self.rect, (0.5, 0.5), (0.5, 0.5))
+            self.text.set_anchor((0.5, 0.5))
+            self.text.set_pivot((0.5, 0.5))
 
     def __on_enable(self):
         self.text.set_active(True)

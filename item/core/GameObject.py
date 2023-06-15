@@ -14,6 +14,7 @@ class GameObject:
         self.enabled : bool = True
         self.block_raycast : bool = True
         self.children : list['GameObject'] = []
+        self.parent : 'GameObject' = None
         
         self.on_awake = Event()
         self.on_draw = Event()
@@ -58,6 +59,7 @@ class GameObject:
 
     def instantiate(self, game_object : T, parent : 'GameObject' = None) -> T:
         if parent is not None:
+            game_object.parent = parent
             parent.children.append(game_object)
         self.on_instantiate(game_object)
         return game_object
@@ -72,6 +74,7 @@ class GameObject:
 
     def destroy(self):
         for child in self.children:
+            child.parent = None
             child.destroy()
         self.children.clear()
         self.on_destroy(self)

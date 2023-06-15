@@ -28,7 +28,8 @@ class JoinRoom(GameObject):
             self.height
         )
         self.title = self.instantiate(Text("Join Room", 48), self)
-        self.title.anchor(self.rect, (0.5, 0), (0.5, 0))
+        self.title.set_anchor((0.5, 0))
+        self.title.set_pivot((0.5, 0))
         self.title.set_margin(top = 60)
 
         self.inputs.append(self.__create_input_field("Room", 140))
@@ -52,7 +53,8 @@ class JoinRoom(GameObject):
             placeholder = text, 
             placeholder_size = 24
         ), self)
-        input_field.anchor(self.rect, (0.5, 0), (0.5, 0))
+        input_field.set_anchor((0.5, 0))
+        input_field.set_pivot((0.5, 0))
         input_field.set_margin(top = top_margin)
         return input_field
     
@@ -64,13 +66,15 @@ class JoinRoom(GameObject):
             text = text, 
             text_size = 36
         ), self)
-        button.anchor(self.rect, (0.5, 1), (0.5, 1))
+        button.set_anchor((0.5, 1))
+        button.set_pivot((0.5, 1))
         button.set_margin(bottom = bottom_margin)
         return button
     
     def __create_close_button(self):
         self.close_button = self.instantiate(CloseButton(48), self)
-        self.close_button.anchor(self.rect, (1, 0), (1, 0))
+        self.close_button.set_anchor((1, 0))
+        self.close_button.set_pivot((1, 0))
         self.close_button.set_margin(top = 20, right = 20)
         self.close_button.on_mouse_down += self.destroy
 

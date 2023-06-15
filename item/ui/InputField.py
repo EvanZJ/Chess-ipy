@@ -12,8 +12,14 @@ class InputField(TextButton):
         self.user_input = ""
         self.is_focus = False
         self.on_mouse_down += self.focus
+        self.on_awake += self.__awake
         self.on_keyboard_down += self.__on_keyboard_down
         self.on_update += self.__update
+
+    def __awake(self):
+        self.text.set_anchor((0, 0.5))
+        self.text.set_pivot((0, 0.5))
+        self.text.set_margin(left = 10)
 
     def __on_keyboard_down(self, event : p.key.ScancodeWrapper):
         if not self.is_focus:

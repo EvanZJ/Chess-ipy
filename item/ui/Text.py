@@ -13,9 +13,4 @@ class Text(UI):
 
     def change_text(self, text: str):
         self.sprite = p.font.Font(self.font, self.size).render(text, True, self.color)
-        x = self.rect.x
-        y = self.rect.y
         self.rect = self.sprite.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
