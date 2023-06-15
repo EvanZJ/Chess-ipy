@@ -1,4 +1,5 @@
 import pygame as p
+from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.ui.InputField import InputField
 from item.ui.Text import Text
@@ -8,6 +9,8 @@ from item.ui.button.CloseButton import CloseButton
 class JoinRoom(GameObject):
     def __init__(self, width: int = 500, height: int = 600, color : p.Color = p.Color("white"), border : int = 16):
         super().__init__()
+
+        self.inputs : list[InputField] = []
         
         self.width = width
         self.height = height
@@ -28,9 +31,13 @@ class JoinRoom(GameObject):
         self.title.anchor(self.rect, (0.5, 0), (0.5, 0))
         self.title.set_margin(top = 60)
 
-        self.room_input = self.__create_input_field("Room", 140)
-        self.name_input = self.__create_input_field("Name", 200)
-        self.create_button = self.__create_button("Join", 50)
+        self.inputs.append(self.__create_input_field("Room", 140))
+        self.inputs.append(self.__create_input_field("Name", 200))
+
+        for input_field in self.inputs:
+            input_field.on_focus += self.on_focus_input
+
+        self.__create_button("Join", 50)
         
         self.__create_close_button()
 
@@ -38,7 +45,7 @@ class JoinRoom(GameObject):
         self.screen.fill((0, 0, 0))
         p.draw.rect(self.screen, self.color, self.rect, 0, self.border)
 
-    def __create_input_field(self, text : str, top_margin : int) -> TextButton:
+    def __create_input_field(self, text : str, top_margin : int) -> InputField:
         input_field = self.instantiate(InputField(
             p.Rect(0, 0, 400, 50),
             p.Color(255, 255, 255, 50),
@@ -66,3 +73,9 @@ class JoinRoom(GameObject):
         self.close_button.anchor(self.rect, (1, 0), (1, 0))
         self.close_button.set_margin(top = 20, right = 20)
         self.close_button.on_mouse_down += self.destroy
+
+    def on_focus_input(self, focused_input_field : InputField):
+        for input_field in self.inputs:
+            if input_field == focused_input_field:
+                continue
+            input_field.set_focus(False)

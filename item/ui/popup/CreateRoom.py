@@ -37,7 +37,7 @@ class CreateRoom(GameObject):
         self.screen.fill((0, 0, 0))
         p.draw.rect(self.screen, self.color, self.rect, 0, self.border)
 
-    def __create_input_field(self, text : str, top_margin : int) -> TextButton:
+    def __create_input_field(self, text : str, top_margin : int) -> InputField:
         input_field = self.instantiate(InputField(
             p.Rect(0, 0, 400, 50),
             p.Color(255, 255, 255, 50),
