@@ -51,16 +51,16 @@ class Board(GameObject):
                 piece = self.board.piece_at(tile.square)
                 self.__instantiate_piece(tile, piece)
 
-    def __on_keyboard_down(self, keys_pressed : p.key.ScancodeWrapper):
-        if keys_pressed[p.K_LEFT]:
+    def __on_keyboard_down(self, event : p.key.ScancodeWrapper):
+        if event.key == p.K_LEFT:
             if len(self.board.move_stack) > 0:
                 self.move_stack.append(self.board.pop())
                 self.__redraw()
-        if keys_pressed[p.K_RIGHT]:
+        if event.key == p.K_RIGHT:
             if len(self.move_stack) > 0:
                 self.board.push(self.move_stack.pop())
                 self.__redraw()
-        if keys_pressed[p.K_f]:
+        if event.key == p.K_f:
             print('sini')
             self.__flip_board()
             # self.__redraw()

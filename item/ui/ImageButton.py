@@ -1,11 +1,14 @@
 import pygame as p
-from item.core.GameObject import GameObject
+from item.ui.Text import Text
+from item.ui.UI import UI
 
-class Button(GameObject):
-    def __init__(self, x : float, y : float, sprite: p.Surface, scale : float):
+class ImageButton(UI):
+    def __init__(self, x : float = 0, y : float = 0, sprite: p.Surface = None, scale : float = 0, text : str = "", text_size : int = 18):
         super().__init__()
         self.x = x
         self.y = y
+        self.text = text
+        self.text_size = text_size
         self.sprite = sprite
         self.scale_xy = scale
 

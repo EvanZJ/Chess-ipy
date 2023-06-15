@@ -1,6 +1,6 @@
 import pygame as p
 from item.core.GameObject import GameObject
-from item.ui.Button import Button
+from item.ui.ImageButton import ImageButton
 from item.ui.button.RetryButton import RetryButton
 
 class NotificationFinished(GameObject):

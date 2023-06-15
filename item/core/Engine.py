@@ -1,4 +1,5 @@
 import time
+from typing import Literal
 import pygame as p
 import sys
 import asyncio
@@ -56,7 +57,10 @@ class Engine:
                     p.quit()
                     sys.exit()
                 if event.type == p.KEYDOWN:
-                    self.__on_keyboard_down(p.key.get_pressed())
+                    # self.__on_keyboard_down(p.key.get_pressed())
+                    self.__on_keyboard_down(event)
+                if event.type == p.MOUSEBUTTONDOWN or event.type == p.MOUSEBUTTONUP:
+                    self.__on_mouse(p.mouse.get_pressed(), event.type)
             self.__draw()
             self.__update()
             self.__end_frame()
@@ -77,13 +81,6 @@ class Engine:
                 pos = p.mouse.get_pos()
                 if game_object.collidepoint(pos):
                     game_object.on_hover()
-                    if self.mouse_down != p.mouse.get_pressed()[0]:
-                        if self.mouse_down == False:
-                            self.mouse_down = True
-                            game_object.on_mouse_down()
-                        else:
-                            self.mouse_down = False
-                            game_object.on_mouse_up()
                 game_object.on_update()
 
     def __end_frame(self):
@@ -115,9 +112,40 @@ class Engine:
         game_objects.append(game_object)
         self.ordered_game_objects_cache[new_order_layer] = game_objects
 
-    def __on_keyboard_down(self, keys_pressed : p.key.ScancodeWrapper):
+    def __on_keyboard_down(self, event : p.event.Event):
         for game_objects in self.ordered_game_objects.values():
             for game_object in game_objects:
                 if not game_object.enabled:
                     continue
-                game_object.on_keyboard_down(keys_pressed)
+                game_object.on_keyboard_down(event)
+
+    def __on_mouse(self, num_buttons: Literal[3], event_type : int):
+         pos = p.mouse.get_pos()
+         for game_objects in reversed(self.ordered_game_objects.values()):
+            for game_object in reversed(game_objects):
+                if not game_object.enabled:
+                    continue
+                if not game_object.block_raycast:
+                    continue
+                if game_object.collidepoint(pos):
+                    if event_type == p.MOUSEBUTTONDOWN:
+                        print(str(game_object) +  " mousedown")
+                        self.mouse_down = True
+                        game_object.on_mouse_down()
+                        return
+                    else:
+                        print(str(game_object) +  " mouseup")
+                        self.mouse_down = False
+                        game_object.on_mouse_up()
+                        return
+                    # if self.mouse_down != num_buttons[0]:
+                    #     if self.mouse_down == False:
+                    #         print(str(game_object) +  " mousedown")
+                    #         self.mouse_down = True
+                    #         game_object.on_mouse_down()
+                    #         return
+                    #     else:
+                    #         print(str(game_object) +  " mouseup")
+                    #         self.mouse_down = False
+                    #         game_object.on_mouse_up()
+                    #         return

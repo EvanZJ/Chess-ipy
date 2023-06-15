@@ -1,7 +1,7 @@
-from item.ui.Button import Button
+from item.ui.ImageButton import ImageButton
 import pygame as p
 
-class QuitButton(Button):
+class QuitButton(ImageButton):
     def __init__(self, x : float, y : float, scale : float):
         image = p.image.load("resource/images/quit.png").convert_alpha()
         super().__init__(x, y, image, scale)
