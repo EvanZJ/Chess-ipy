@@ -27,7 +27,7 @@ class Room(GameObject):
             self.width,
             self.height
         )
-        self.title = self.instantiate(Text("Room", 48))
+        self.title = self.instantiate(Text("Room", 48), self)
         self.title.anchor(self.rect, (0.5, 0), (0.5, 0))
         self.title.set_margin(top = 60)
 
@@ -43,16 +43,16 @@ class Room(GameObject):
         p.draw.rect(self.screen, self.color, self.rect, 0, self.border)
 
     def __on_enable(self):
-        self.create_room_button.set_enable(True)
-        self.title.set_enable(True)
-        self.join_room_button.set_enable(True)
-        self.close_button.set_enable(True)
+        self.create_room_button.set_active(True)
+        self.title.set_active(True)
+        self.join_room_button.set_active(True)
+        self.close_button.set_active(True)
 
     def __on_disable(self):
-        self.create_room_button.set_enable(False)
-        self.title.set_enable(False)
-        self.join_room_button.set_enable(False)
-        self.close_button.set_enable(False)
+        self.create_room_button.set_active(False)
+        self.title.set_active(False)
+        self.join_room_button.set_active(False)
+        self.close_button.set_active(False)
 
     def __create_button(self, text : str, top_margin : int) -> TextButton:
         button = self.instantiate(TextButton(
@@ -61,13 +61,13 @@ class Room(GameObject):
             8,
             text = text, 
             text_size = 36
-        ))
+        ), self)
         button.anchor(self.rect, (0.5, 0), (0.5, 0))
         button.set_margin(top = top_margin)
         return button
     
     def __create_close_button(self):
-        self.close_button = self.instantiate(CloseButton(48))
+        self.close_button = self.instantiate(CloseButton(48), self)
         self.close_button.anchor(self.rect, (1, 0), (1, 0))
         self.close_button.set_margin(top = 20, right = 20)
-        self.close_button.on_mouse_down += lambda : self.set_enable(False)
+        self.close_button.on_mouse_down += lambda : self.set_active(False)

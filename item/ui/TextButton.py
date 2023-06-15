@@ -19,21 +19,16 @@ class TextButton(UI):
         self.on_enable += self.__on_enable
         self.on_disable += self.__on_disable
 
-        self.on_destroy += self.__on_destroy
-
     def __awake(self):
         if self.text_str and isinstance(self.rect, p.Rect):
-            self.text = self.instantiate(Text(self.text_str, self.text_size))
+            self.text = self.instantiate(Text(self.text_str, self.text_size), self)
 
     def __update(self):
         if isinstance(self.text, Text):
             self.text.anchor(self.rect, (0.5, 0.5), (0.5, 0.5))
 
     def __on_enable(self):
-        self.text.set_enable(True)
+        self.text.set_active(True)
 
     def __on_disable(self):
-        self.text.set_enable(False)
-
-    def __on_destroy(self, game_object):
-        self.text.destroy()
+        self.text.set_active(False)

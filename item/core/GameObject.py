@@ -13,6 +13,7 @@ class GameObject:
         self.order_layer: int = 0
         self.enabled : bool = True
         self.block_raycast : bool = True
+        self.children : list['GameObject'] = []
         
         self.on_awake = Event()
         self.on_draw = Event()
@@ -55,7 +56,9 @@ class GameObject:
         if isinstance(self.rect, p.Rect):
             self.rect.topleft = (x, y)
 
-    def instantiate(self, game_object : T) -> T:
+    def instantiate(self, game_object : T, parent : 'GameObject' = None) -> T:
+        if parent is not None:
+            parent.children.append(game_object)
         self.on_instantiate(game_object)
         return game_object
 
@@ -68,6 +71,9 @@ class GameObject:
         self.on_change_order_layer(self, old_order_layer, new_order_layer)
 
     def destroy(self):
+        for child in self.children:
+            child.destroy()
+        self.children.clear()
         self.on_destroy(self)
 
     def collidepoint(self, x_y) -> bool:
@@ -75,7 +81,7 @@ class GameObject:
             return self.rect.collidepoint(x_y)
         return False
     
-    def set_enable(self, value : bool):
+    def set_active(self, value : bool):
         self.enabled = value
         if(self.enabled == True):
             self.on_enable()

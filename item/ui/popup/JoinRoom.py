@@ -16,7 +16,6 @@ class JoinRoom(GameObject):
 
         self.on_awake += self.__awake
         self.on_draw += self.__draw
-        self.on_destroy += self.__on_destroy
 
     def __awake(self):
         self.rect = p.Rect(
@@ -25,7 +24,7 @@ class JoinRoom(GameObject):
             self.width,
             self.height
         )
-        self.title = self.instantiate(Text("Join Room", 48))
+        self.title = self.instantiate(Text("Join Room", 48), self)
         self.title.anchor(self.rect, (0.5, 0), (0.5, 0))
         self.title.set_margin(top = 60)
 
@@ -39,20 +38,13 @@ class JoinRoom(GameObject):
         self.screen.fill((0, 0, 0))
         p.draw.rect(self.screen, self.color, self.rect, 0, self.border)
 
-    def __on_destroy(self, game_object):
-        self.title.destroy()
-        self.name_input.destroy()
-        self.close_button.destroy()
-        self.create_button.destroy()
-        self.room_input.destroy()
-
     def __create_input_field(self, text : str, top_margin : int) -> TextButton:
         input_field = self.instantiate(InputField(
             p.Rect(0, 0, 400, 50),
             p.Color(255, 255, 255, 50),
             placeholder = text, 
             placeholder_size = 24
-        ))
+        ), self)
         input_field.anchor(self.rect, (0.5, 0), (0.5, 0))
         input_field.set_margin(top = top_margin)
         return input_field
@@ -64,13 +56,13 @@ class JoinRoom(GameObject):
             8,
             text = text, 
             text_size = 36
-        ))
+        ), self)
         button.anchor(self.rect, (0.5, 1), (0.5, 1))
         button.set_margin(bottom = bottom_margin)
         return button
     
     def __create_close_button(self):
-        self.close_button = self.instantiate(CloseButton(48))
+        self.close_button = self.instantiate(CloseButton(48), self)
         self.close_button.anchor(self.rect, (1, 0), (1, 0))
         self.close_button.set_margin(top = 20, right = 20)
         self.close_button.on_mouse_down += self.destroy
