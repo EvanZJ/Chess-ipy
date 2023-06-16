@@ -25,7 +25,7 @@ class MainMenu(GameObject):
         self.instantiate(WatchGameButton(100, 400, 0.75))
         self.instantiate(QuitButton(100, 550, 0.75))
 
-        self.room = self.instantiate(Room(560, 600, p.Color(55, 56, 85, 255)))
+        self.room = self.instantiate(Room(540, 500, p.Color(55, 56, 85, 255)))
         self.room.set_active(False)
 
     def __draw(self):
@@ -33,9 +33,7 @@ class MainMenu(GameObject):
         self.screen.blit(self.logo, (720, 325))
 
     def play_local(self):
-        current_game = Game()
-        self.load(current_game)
-        self.instantiate(NotificationFinished()) if current_game.is_finished else None
+        self.load_scene(1)
 
     def enable_room(self):
         self.room.set_active(True)

@@ -25,7 +25,7 @@ class GameObject:
         self.on_hover = Event()
         self.on_mouse_down = Event()
         self.on_mouse_up = Event()
-        self.on_load = Event()
+        self.on_load_scene = Event()
         self.on_change_order_layer = Event()
         self.on_keyboard_down = Event()
         self.on_enable = Event()
@@ -64,8 +64,8 @@ class GameObject:
         self.on_instantiate(game_object)
         return game_object
 
-    def load(self, game_object : 'GameObject'):
-        self.on_load(game_object)
+    def load_scene(self, scene_id : int):
+        self.on_load_scene(scene_id)
 
     def change_order_layer(self, new_order_layer: int):
         old_order_layer = self.order_layer

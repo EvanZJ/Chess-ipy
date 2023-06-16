@@ -1,4 +1,6 @@
+from typing import Callable
 import pygame as p
+from item.scene.Game import Game
 
 from item.ui.ImageButton import ImageButton
 from item.chess.Board import Board
@@ -21,6 +23,11 @@ screen = p.display.set_mode((0, 0), p.FULLSCREEN)
 screen.set_alpha()
 p.display.set_caption("Chess-ipy")
 
-engine = Engine(screen)
-engine.load(MainMenu())
+scenes = {
+    0: MainMenu,
+    1: Game
+}
+
+engine = Engine(screen, scenes)
+engine.load_scene(0)
 engine.run()
