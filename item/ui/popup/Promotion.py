@@ -31,16 +31,18 @@ class PromotionUI(GameObject):
     
     def __awake(self):
         for i in range(4):
-            tile = self.instantiate(Tile(self.color, p.Rect(self.rect.topleft[0], self.rect.topleft[1] + i * self.rect.width, self.rect.width, self.rect.width), None))
+            tile = self.instantiate(Tile(self.color, p.Rect(self.rect.topleft[0], self.rect.topleft[1] + i * self.rect.width, self.rect.width, self.rect.width), None), self)
             tile.change_order_layer(101)
             tile.square = self.square
-            tile.on_mouse_down = self.__select()
+            # tile.on_mouse_down += self.__select
             self.tiles.append(tile)
-            piece = self.instantiate(Piece(self.white_piece[i], self.convert[self.white_piece[i]])) if self.turn == "white" else self.instantiate(Piece(self.black_piece[i], self.convert[self.black_piece[i]]))
+            c_piece = chess.Piece(self.piece_convert[self.white_piece[i]], True if self.turn == "white" else False)
+            piece = self.instantiate(Piece(c_piece, self.convert[self.white_piece[i]]), tile) if self.turn == "white" else self.instantiate(Piece(c_piece, self.convert[self.black_piece[i]]), tile)
             piece.change_order_layer(102)
             piece.scale(self.rect.width, self.rect.height // 4)
             tile.attach_piece(piece)
             tile.on_select += self.__on_select_tile
+
             # self.pieces.append(self.instantiate(Piece(self.white_piece[i], self.convert[self.white_piece[i]], True))) if self.turn == "white" else self.pieces.append(self.instantiate(Piece(self.black_piece[i], self.convert[self.black_piece[i]], True)))
             # self.pieces[i].change_order_layer(101)
             # self.pieces[i].move(self.rect.topleft[0], self.rect.topleft[1] + i * self.rect.width)
@@ -71,6 +73,7 @@ class PromotionUI(GameObject):
         self.on_select(self)
 
     def __on_select_tile(self, selected_tile : Tile):
-        print(selected_tile.piece.piece)
-        return self.piece_convert[selected_tile.piece.piece]
+        # print(selected_tile.piece.piece)
+        # return self.piece_convert[selected_tile.piece.piece]
+        self.on_select(selected_tile.piece.get_piece_type())
         # return symbol

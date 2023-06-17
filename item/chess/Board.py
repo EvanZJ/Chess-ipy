@@ -161,6 +161,7 @@ class Board(GameObject):
         move_piece = chess.Move(self.current_selected_tile.square, to_tile.square)
 
         if self.__is_promotion(self.current_selected_tile.piece, move_piece) and self.promote_tiles != to_tile:
+            move_piece.promotion
             self.promotion_ui.destroy() if self.promotion_ui is not None else None
             self.__redraw()
             if not self.flipped:
@@ -214,16 +215,25 @@ class Board(GameObject):
                         'black',
                         to_tile.square
                     )
+            self.promotion_ui.on_select += lambda piece_type : self.__promote(to_tile, move_piece, piece_type)
             self.promote_tiles = to_tile
             for i in range(4):
                 print('here ', self.promotion_ui.tiles[i].square)
                 # self.promotion_ui.tiles[i].on_select += self.__on_select_promotion
         else :
-            self.board.push(move_piece)
-            self.last_move_tile.clear()
-            self.last_move_tile.append(self.current_selected_tile.square)
-            self.last_move_tile.append(to_tile.square)
-            self.__redraw()
+            self.__push(to_tile, move_piece)
+
+    def __promote(self, to_tile : Tile, move : chess.Move, piece_type : chess.PieceType):
+        self.promotion_ui.destroy()
+        move.promotion = piece_type
+        self.__push(to_tile, move)
+
+    def __push(self, to_tile, move_piece):
+        self.board.push(move_piece)
+        self.last_move_tile.clear()
+        self.last_move_tile.append(self.current_selected_tile.square)
+        self.last_move_tile.append(to_tile.square)
+        self.__redraw()
 
     # def __on_select_promotion(self, selected_tile : Tile):
     #     move_piece = chess.Move(self.current_selected_tile.square, self.promotion_ui.square[selected_tile])
