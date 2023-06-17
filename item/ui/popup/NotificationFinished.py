@@ -9,7 +9,7 @@ class NotificationFinished(GameObject):
         infoObject = p.display.Info()
         self.current_width = infoObject.current_w
         self.current_height = infoObject.current_h
-        print(self.current_width, self.current_height)
+        # print(self.current_width, self.current_height)
         self.order_layer = 4
         self.x = x
         self.y = y

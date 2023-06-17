@@ -1,9 +1,13 @@
 from collections import deque
+import sys
+import time
 import chess
 import pygame as p
 from item.core.GameObject import GameObject
 from item.chess.Piece import Piece
 from item.chess.Tile import Tile
+from item.ui.popup.NotificationFinished import NotificationFinished
+from item.ui.popup.Promotion import PromotionUI
 
 class Board(GameObject):
     def __init__(self):
@@ -42,6 +46,9 @@ class Board(GameObject):
         self.relative_value = 0
         self.flipped : bool = False
         self.finished : bool = False
+        self.promotion_ui : PromotionUI = None
+        self.state_promotion : bool = False
+        self.promote_tiles : Tile = None
         # self.on_update += self.__update
 
     def __awake(self):
@@ -61,7 +68,7 @@ class Board(GameObject):
                 self.board.push(self.move_stack.pop())
                 self.__redraw()
         if event.key == p.K_f:
-            print('sini')
+            # print('sini')
             self.__flip_board()
             # self.__redraw()
             
@@ -85,7 +92,7 @@ class Board(GameObject):
 
         self.relative_value = self.__get_relative_value()
         self.finished = self.board.is_game_over()
-        print(self.relative_value)
+        # print(self.relative_value)
         
         # for square in self.last_move_tile:
         #     self.tiles_cache[square].color = p.Color("yellow")
@@ -111,6 +118,11 @@ class Board(GameObject):
 
         return tile
 
+    def __instantiate_promotion_ui(self, box : p.Rect, color : p.Color, turn, square : chess.Square):
+        # print(color, box)
+        promotion_ui = self.instantiate(PromotionUI(box, color, turn, square))
+        return promotion_ui
+
     def __instantiate_piece(self, tile : Tile, piece : chess.Piece):
         if piece is not None:
             symbol = self.convert[piece.symbol()]
@@ -119,7 +131,7 @@ class Board(GameObject):
             piece_instance.change_order_layer(1)
             tile.attach_piece(piece_instance)
 
-    def __on_select_tile(self, selected_tile : Tile):
+    def __on_select_tile(self,selected_tile : Tile):
         if not self.__can_interact_with_board():
             return
 
@@ -148,14 +160,75 @@ class Board(GameObject):
     def __move_piece(self, to_tile : Tile):
         move_piece = chess.Move(self.current_selected_tile.square, to_tile.square)
 
-        if self.__is_promotion(self.current_selected_tile.piece, move_piece):
-            move_piece.promotion = chess.QUEEN
-            
-        self.last_move_tile.clear()
-        self.last_move_tile.append(self.current_selected_tile.square)
-        self.last_move_tile.append(to_tile.square)
-        self.board.push(move_piece)
-        self.__redraw()
+        if self.__is_promotion(self.current_selected_tile.piece, move_piece) and self.promote_tiles != to_tile:
+            self.promotion_ui.destroy() if self.promotion_ui is not None else None
+            self.__redraw()
+            if not self.flipped:
+                # print(self.board.turn)
+                if self.board.turn == chess.WHITE:
+                    self.promotion_ui = self.__instantiate_promotion_ui(
+                        p.Rect(
+                            to_tile.rect.topleft[0],
+                            to_tile.rect.topleft[1],
+                            self.width // 8,
+                            self.height // 8 * 4,
+                        ),
+                        p.Color("blue"),
+                        'white',
+                        to_tile.square
+                    )
+                else :
+                    self.promotion_ui = self.__instantiate_promotion_ui(
+                        p.Rect(
+                            to_tile.rect.topleft[0],
+                            to_tile.rect.topleft[1] - self.height // 8 * 3,
+                            self.width // 8,
+                            self.height // 8 * 4,
+                        ),
+                        p.Color("blue"),
+                        'black',
+                        to_tile.square
+                    )
+            else :
+                if self.board.turn == chess.WHITE:
+                    self.promotion_ui = self.__instantiate_promotion_ui(
+                        p.Rect(
+                            to_tile.rect.topleft[0],
+                            to_tile.rect.topleft[1] - self.height // 8 * 3,
+                            self.width // 8,
+                            self.height // 8 * 4,
+                        ),
+                        p.Color("blue"),
+                        'white',
+                        to_tile.square
+                    )
+                else :
+                    self.promotion_ui = self.__instantiate_promotion_ui(
+                        p.Rect(
+                            to_tile.rect.topleft[0],
+                            to_tile.rect.topleft[1],
+                            self.width // 8,
+                            self.height // 8 * 4,
+                        ),
+                        p.Color("blue"),
+                        'black',
+                        to_tile.square
+                    )
+            self.promote_tiles = to_tile
+            for i in range(4):
+                print('here ', self.promotion_ui.tiles[i].square)
+                # self.promotion_ui.tiles[i].on_select += self.__on_select_promotion
+        else :
+            self.board.push(move_piece)
+            self.last_move_tile.clear()
+            self.last_move_tile.append(self.current_selected_tile.square)
+            self.last_move_tile.append(to_tile.square)
+            self.__redraw()
+
+    # def __on_select_promotion(self, selected_tile : Tile):
+    #     move_piece = chess.Move(self.current_selected_tile.square, self.promotion_ui.square[selected_tile])
+    #     move_piece.promotion = selected_tile.piece.piece_type
+    #     self.board.push(move_piece)
 
     def __can_interact_with_board(self) -> bool:
         return len(self.move_stack) <= 0

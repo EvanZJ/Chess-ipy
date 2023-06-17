@@ -143,7 +143,7 @@ class Engine:
                         game_object.on_mouse_down()
                         return
                     else:
-                        print(str(game_object) +  " mouseup")
+                        # print(str(game_object) +  " mouseup")
                         self.mouse_down = False
                         game_object.on_mouse_up()
                         return

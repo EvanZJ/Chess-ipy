@@ -3,7 +3,7 @@ from item.ui.Text import Text
 from item.ui.UI import UI
 
 class TextButton(UI):
-    def __init__(self, rect : p.Rect = None, color : p.Color = p.Color("white"), border : int = 0, text : str = "", text_size : int = 18):
+    def __init__(self, rect : p.Rect = None, color : p.Color = p.Color("green"), border : int = 0, text : str = "", text_size : int = 18):
         super().__init__()
         self.text : Text = None
         self.text_str = text
