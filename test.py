@@ -47,3 +47,7 @@
 
 # # # Call the lambda function associated with 'key3'
 # # my_dict['key3']()  # Output: Lambda function 3 called
+
+import sys
+
+print(sys.path)
