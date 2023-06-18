@@ -42,33 +42,7 @@ class PromotionUI(GameObject):
             piece.scale(self.rect.width, self.rect.height // 4)
             tile.attach_piece(piece)
             tile.on_select += self.__on_select_tile
-
-            # self.pieces.append(self.instantiate(Piece(self.white_piece[i], self.convert[self.white_piece[i]], True))) if self.turn == "white" else self.pieces.append(self.instantiate(Piece(self.black_piece[i], self.convert[self.black_piece[i]], True)))
-            # self.pieces[i].change_order_layer(101)
-            # self.pieces[i].move(self.rect.topleft[0], self.rect.topleft[1] + i * self.rect.width)
-            # self.pieces[i].scale(self.rect.width, self.rect.height // 4)
-            # self.on_mouse_down += self.__mouse_down
-
-    #     self.scale(int(self.sprite.get_width() * self.scale_xy), int(self.sprite.get_height() * self.scale_xy))
-    #     self.move(self.current_width/2 - self.rect.width/2, self.current_height/2 - self.rect.height/2)
-        
-
-        # self.piece = self.white_piece
-        # self.on_mouse_down += self.__mouse_down
-
-    # def __draw(self):
-        # p.draw.rect(self.screen, self.color, self.rect)
-
-    def __mouse_down(self):
-        # get piece symbol if mouse button down
-        for event in p.event.get():
-            if event.type == p.MOUSEBUTTONDOWN:
-                mouse_pos = p.mouse.get_pos()
-                for piece in self.pieces:
-                    if piece.rect.collidepoint(mouse_pos):
-                        print(piece.symbol)
-                        # return piece.symbol
-
+            
     def __select(self):
         self.on_select(self)
 

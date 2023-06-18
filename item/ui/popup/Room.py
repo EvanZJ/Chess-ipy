@@ -35,7 +35,7 @@ class Room(GameObject):
         self.create_room_button = self.__create_button("Create Room", 200)
         self.create_room_button.on_mouse_down += lambda : self.instantiate(CreateRoom(600, 400, p.Color(55, 56, 85, 255)))
 
-        self.join_room_button = self.__create_button("Join Room", 320)
+        self.join_room_button = self.__create_button("Join Room", 500)
         self.join_room_button.on_mouse_down += lambda : self.instantiate(JoinRoom(600, 400, p.Color(55, 56, 85, 255)))
         
         self.__create_close_button()
@@ -61,7 +61,7 @@ class Room(GameObject):
             p.Color(255, 255, 255, 50),
             8,
             text = text, 
-            text_size = 36
+            text_size = 40
         ), self)
         button.set_anchor((0.5, 0))
         button.set_pivot((0.5, 0))
@@ -72,5 +72,5 @@ class Room(GameObject):
         self.close_button = self.instantiate(CloseButton(48), self)
         self.close_button.set_anchor((1, 0))
         self.close_button.set_pivot((1, 0))
-        self.close_button.set_margin(top = 20, right = 20)
+        self.close_button.set_margin(top = 0, right = 0)
         self.close_button.on_mouse_down += lambda : self.set_active(False)

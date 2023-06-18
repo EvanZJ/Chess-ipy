@@ -29,3 +29,10 @@ class TextButton(UI):
 
     def __on_disable(self):
         self.text.set_active(False)
+
+    def set_active(self, value : bool):
+        self.enabled = value
+        if(self.enabled == True):
+            self.on_enable()
+        else:
+            self.on_disable()
