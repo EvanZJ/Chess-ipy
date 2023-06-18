@@ -32,13 +32,15 @@ class JoinRoom(GameObject):
         self.title.set_pivot((0.5, 0))
         self.title.set_margin(top = 60)
 
-        self.inputs.append(self.__create_input_field("Room", 140))
-        self.inputs.append(self.__create_input_field("Name", 200))
+        room_input = self.__create_input_field("Room", 140)
+        self.inputs.append(room_input)
+        name_input = self.__create_input_field("Name", 200)
+        self.inputs.append(name_input)
 
         for input_field in self.inputs:
             input_field.on_focus += self.on_focus_input
 
-        self.__create_button("Join", 50)
+        self.__create_button("Join", 50).on_mouse_down += lambda : self.load_scene(2, name_input.user_input, True, room_input.user_input)
         
         self.__create_close_button()
 

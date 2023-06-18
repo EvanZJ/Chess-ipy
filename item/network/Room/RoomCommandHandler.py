@@ -9,9 +9,12 @@ class RoomCommandHandler(CommandHandler):
 
     def Handle(self, command : str) -> bool:
         commands = command.split(" ")
+        print(command)
         if commands[0] == "room":
             if commands[1] == "create":
-                print(command)
+                self.room.create(int(commands[2]))
+                return True
+            if commands[1] == "join":
                 self.room.create(int(commands[2]))
                 return True
         return False

@@ -12,6 +12,7 @@ class RoomManager:
         return new_room_number
 
     def join_room(self, room_number : int) -> bool:
+        print(room_number)
         return self.occupied_rooms.__contains__(room_number)
     
     def release_room(self, room_number : int):
