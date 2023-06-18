@@ -64,8 +64,8 @@ class GameObject:
         self.on_instantiate(game_object)
         return game_object
 
-    def load_scene(self, scene_id : int):
-        self.on_load_scene(scene_id)
+    def load_scene(self, scene_id : int, *args, **keywargs):
+        self.on_load_scene(scene_id, *args, **keywargs)
 
     def change_order_layer(self, new_order_layer: int):
         old_order_layer = self.order_layer
