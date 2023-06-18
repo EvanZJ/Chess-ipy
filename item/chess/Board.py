@@ -6,8 +6,10 @@ import pygame as p
 from item.core.GameObject import GameObject
 from item.chess.Piece import Piece
 from item.chess.Tile import Tile
+from item.ui.TextButton import TextButton
 from item.ui.popup.NotificationFinished import NotificationFinished
 from item.ui.popup.Promotion import PromotionUI
+from item.ui.Text import Text
 
 class Board(GameObject):
     def __init__(self):
@@ -49,7 +51,7 @@ class Board(GameObject):
         self.promotion_ui : PromotionUI = None
         self.state_promotion : bool = False
         self.promote_tiles : Tile = None
-        # self.on_update += self.__update
+        self.text = None
 
     def __awake(self):
         for row in range(8):
@@ -57,7 +59,21 @@ class Board(GameObject):
                 tile = self.__instantiate_tile(row, column)
                 piece = self.board.piece_at(tile.square)
                 self.__instantiate_piece(tile, piece)
+        # self.text = self.__create_relative_value_text(str(self.relative_value))
 
+    # def __create_relative_value_text(self, text : str) -> TextButton:
+    #     relative_value_text = self.instantiate(TextButton(
+    #          p.Rect(500, 500, 100, 20), 
+    #         p.Color("white"), 
+    #         0,
+    #         text = text,
+    #         text_size = 20
+    #     ), self)
+    #     relative_value_text.set_anchor((0, 0))
+    #     relative_value_text.set_pivot((0, 0))
+    #     relative_value_text.set_margin(0, 0, 0, 0)
+    #     return relative_value_text
+# 
     def __on_keyboard_down(self, event : p.event.Event):
         if event.key == p.K_LEFT:
             if len(self.board.move_stack) > 0:
@@ -75,6 +91,8 @@ class Board(GameObject):
 
     def __redraw(self):
         # print("redraw")
+        if(self.promotion_ui != None):
+            self.promotion_ui.destroy()
         for tile in self.tiles:
             tile.destroy()
         self.tiles_cache.clear()
@@ -161,7 +179,6 @@ class Board(GameObject):
         move_piece = chess.Move(self.current_selected_tile.square, to_tile.square)
 
         if self.__is_promotion(self.current_selected_tile.piece, move_piece) and self.promote_tiles != to_tile:
-            move_piece.promotion
             self.promotion_ui.destroy() if self.promotion_ui is not None else None
             self.__redraw()
             if not self.flipped:
@@ -272,6 +289,7 @@ class Board(GameObject):
         
     def __flip_board(self):
         self.flipped = not self.flipped
+        
         self.__redraw()
 
     def __is_promotion(self, piece : Piece, move : chess.Move) -> bool:
