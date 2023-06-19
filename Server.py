@@ -5,6 +5,7 @@ import threading
 import struct
 
 from server.Client import Client
+from server.ClientManager import ClientManager
 from server.CommandHandler import CommandHandler
 from server.Room.RoomCommandHandler import RoomCommandHandler
 
@@ -13,7 +14,8 @@ class Server:
         self.host : str = host
         self.port : int = port
         self.listen : int = listen
-        self.clients : list[Client] = []
+        self.client_manager : ClientManager = ClientManager()
+        
         self.command_handlers : list[CommandHandler] = command_handlers
 
     def open_socket(self):
@@ -32,26 +34,22 @@ class Server:
             for s in inputready:
                 if s == self.server:
                     client_socket, client_address = self.server.accept()
-                    client = Client(client_socket, client_address)
-                    client.on_receive_data += self.handle_data
-                    client.start()
-                    self.clients.append(client)
+                    self.client_manager.add_client(client_socket, client_address).on_receive_data += self.handle_data
+                    # client = Client(client_socket, client_address)
+                    # client.on_receive_data += self.handle_data
+                    # client.start()
+                    # self.clients.append(client)
         self.server.close()
-        for client in self.clients:
-            client.join()
+        self.client_manager.stop()
+        # for client in self.clients:
+        #     client.join()
 
     def handle_data(self, receiving_client : Client, data : str):
         for command_handler in self.command_handlers:
-            if command_handler.Handle(data):
-                print("command executed success")
-        print("command executed failed")
-
-    def broadcast(self, sender : Client, data : str):
-        for client in self.clients :
-            if client == sender:
-                continue
-
-            client.socket.send(data.encode())
+            if command_handler.Handle(receiving_client, self.client_manager, data):
+                print("command executed success: " + data)
+                return
+        print("command executed failed: " + data)
 
 command_handlers : list[CommandHandler] = {
     RoomCommandHandler()

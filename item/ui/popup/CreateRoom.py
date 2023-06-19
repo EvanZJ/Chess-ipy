@@ -31,6 +31,7 @@ class CreateRoom(GameObject):
 
         self.name_input = self.__create_input_field("Name", 160)
         self.create_button = self.__create_button("Create", 50)
+        self.create_button.on_mouse_down += lambda : self.load_scene(2, self.name_input.user_input)
         
         self.__create_close_button()
 
