@@ -15,10 +15,15 @@ class NotificationFinished(GameObject):
         self.y = y
         self.scale_xy = scale
         self.sprite : p.Surface = p.image.load("resource/images/notification.png")
-        self.instantiate(RetryButton(960,540,1))
+        
         self.on_awake += self.__awake
 
     def __awake(self):
         self.scale(int(self.sprite.get_width() * self.scale_xy), int(self.sprite.get_height() * self.scale_xy))
         self.move(self.current_width/2 - self.rect.width/2, self.current_height/2 - self.rect.height/2)
+
+        retry_button = self.instantiate(RetryButton(960,540,1), self)
+        retry_button.set_anchor((0.5, 1))
+        retry_button.set_pivot((0.5, 0.5))
+        retry_button.set_margin(bottom = 100)
         # self.on_draw += self.__draw
