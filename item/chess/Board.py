@@ -52,6 +52,7 @@ class Board(GameObject):
         self.state_promotion : bool = False
         self.promote_tiles : Tile = None
         self.text = None
+        self.result = None
 
     def __awake(self):
         for row in range(8):
@@ -110,10 +111,26 @@ class Board(GameObject):
 
         self.relative_value = self.__get_relative_value()
         self.finished = self.board.is_game_over()
+        self.result = self.__board_result()
         # print(self.relative_value)
         
         # for square in self.last_move_tile:
         #     self.tiles_cache[square].color = p.Color("yellow")
+
+    def __board_result(self) -> str:
+        if self.board.is_checkmate():
+            winner = "Black" if self.board.turn else "White"  # If it's black's turn, white wins; otherwise, black wins
+        elif self.board.is_stalemate():
+            winner = "Draw (Stalemate)"
+        elif self.board.is_insufficient_material():
+            winner = "Draw (Insufficient Material)"
+        elif self.board.is_seventyfive_moves():
+            winner = "Draw (75-move rule)"
+        elif self.board.is_fivefold_repetition():
+            winner = "Draw (Fivefold repetition)"
+        else:
+            winner = "Game in progress" 
+        return winner
 
     def __instantiate_tile(self, row : int, column : int) -> Tile:
         color = self.colors[((row + column) % 2)]

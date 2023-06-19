@@ -17,6 +17,7 @@ class Game(GameObject):
         self.on_keyboard_down += self.__on_keyboard_down
         self.close_button = None
         self.relative_value_text : TextRender = None
+        self.notif_popup : NotificationFinished = None
 
     def __awake(self):
         self.board = Board()
@@ -33,9 +34,12 @@ class Game(GameObject):
         # self.screen.blit(self.relative_value_text.render(), (0, 0))
         # print(self.relative_value_text.text)
         self.finished = self.board.finished
+        print(self.board.result)
+
         if self.finished:
             # self.instantiate(PromotionUI(p.Rect( 0, 0, 800, 600), p.Color(255, 255, 255, 100))))
-            self.instantiate(NotificationFinished(0,0,2), self)
+            self.notif_popup = self.instantiate(NotificationFinished(0,0,2, self.board.result + " wins!"), self)
+            self.notif_popup.retry_button.on_mouse_down += lambda : self.load_scene(1)
 
     def __on_keyboard_down(self, event : p.event.Event):
         if event.key == p.K_ESCAPE:
