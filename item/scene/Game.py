@@ -59,7 +59,7 @@ class Game(GameObject):
         text = self.instantiate(TextRender(
             200,
             100,
-            'gol',
+            text,
             100,
             p.Color(255, 255, 255, 255),
         ), self)

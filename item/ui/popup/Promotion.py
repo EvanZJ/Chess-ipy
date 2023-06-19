@@ -12,7 +12,7 @@ class PromotionUI(GameObject):
         super().__init__()
         self.white_piece = ["Q", "R", "N", "B"]
         self.convert = {"P": "wp", "R": "wR", "N": "wN", "B": "wB", "Q": "wQ", "K": "wK", "p": "bp", "r": "bR", "n": "bN", "b": "bB", "q": "bQ", "k": "bK"}
-        self.black_piece = ["r", "n", "b", "q"]
+        self.black_piece = ["q", "r", "n", "b"]
         self.turn = turn
         self.tiles : Tile = []
         self.rect = rect

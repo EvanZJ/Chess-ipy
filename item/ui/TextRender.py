@@ -18,16 +18,14 @@ class TextRender(GameObject):
     def __awake(self):
         # print('here')
         self.rect = self.sprite.get_rect()
-        print(self.rect)
+        # print(self.rect)
         self.change_order_layer(20)
         self.rect.topleft = (self.x, self.y)
-        print(self.rect)
-        print(self.sprite)
+        # print(self.rect)
+        # print(self.sprite)
         self.set_active(True)
 
     def __draw(self):
-        # print('here')
-        print(self.text)
         self.screen.blit(self.sprite, self.rect)
 
     def __update(self):
