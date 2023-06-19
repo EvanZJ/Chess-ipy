@@ -47,13 +47,13 @@ class Engine:
 
         self.instantiate(game_object)
 
-    def load_scene(self, scene_id : int):
+    def load_scene(self, scene_id : int, *args, **keywargs):
         if not self.scenes:
             return
         if not self.scenes.__contains__(scene_id):
             return
         
-        self.load(self.scenes[scene_id]())
+        self.load(self.scenes[scene_id](*args, **keywargs))
 
     async def __loop(self):
         running = True

@@ -35,7 +35,7 @@ class Game(GameObject):
         self.finished = self.board.finished
         if self.finished:
             # self.instantiate(PromotionUI(p.Rect( 0, 0, 800, 600), p.Color(255, 255, 255, 100))))
-            self.instantiate(NotificationFinished(0,0,2))
+            self.instantiate(NotificationFinished(0,0,2), self)
 
     def __on_keyboard_down(self, event : p.event.Event):
         if event.key == p.K_ESCAPE:
