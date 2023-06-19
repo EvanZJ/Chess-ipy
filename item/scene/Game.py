@@ -61,6 +61,6 @@ class Game(GameObject):
             100,
             'gol',
             100,
-            p.Color(0, 0, 0, 255),
+            p.Color(255, 255, 255, 255),
         ), self)
         return text
