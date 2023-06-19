@@ -18,7 +18,7 @@ class TextRender(GameObject):
     def __awake(self):
         # print('here')
         self.rect = self.sprite.get_rect()
-        # print(self.rect)
+        print(self.rect)
         self.change_order_layer(20)
         self.rect.topleft = (self.x, self.y)
         # print(self.rect)
@@ -35,3 +35,8 @@ class TextRender(GameObject):
 
     def set_active(self, value: bool):
         return super().set_active(value)
+    
+    def move(self, x : float, y : float):
+        if isinstance(self.rect, p.Rect):
+            self.x = x
+            self.y = y
