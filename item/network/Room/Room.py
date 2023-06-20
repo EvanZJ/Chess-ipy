@@ -15,11 +15,11 @@ class Room(GameObject):
         self.client : Client = client
         self.user_name : str = user_name
 
-    def request_create(self):
-        self.client.send("room create")
+    def request_create(self, user_name : str):
+        self.client.send("room create " + user_name)
 
-    def request_join(self, room_number : int):
-        self.client.send("room join " + room_number)
+    def request_join(self, user_name : str, room_number : int):
+        self.client.send("room join " + room_number + " " + user_name)
 
     def create(self, room_number : int):
         self.instantiate(Board())

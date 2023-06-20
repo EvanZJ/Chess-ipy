@@ -7,7 +7,9 @@ import struct
 from server.Client import Client
 from server.ClientManager import ClientManager
 from server.CommandHandler import CommandHandler
-from server.Room.RoomCommandHandler import RoomCommandHandler
+from server.command.ChessCommandHandler import ChessCommandHandler
+from server.room.RoomManager import RoomManager
+from server.command.RoomCommandHandler import RoomCommandHandler
 
 class Server:
     def __init__(self, host : str, port : int, listen : int, command_handlers : list[CommandHandler]):
@@ -51,8 +53,10 @@ class Server:
                 return
         print("command executed failed: " + data)
 
+room_manager = RoomManager()
 command_handlers : list[CommandHandler] = {
-    RoomCommandHandler()
+    RoomCommandHandler(room_manager),
+    ChessCommandHandler(room_manager)
 }
 s = Server('localhost', 5000, 50, command_handlers)
 s.run()

@@ -25,6 +25,6 @@ class MultiplayerGame(GameObject):
 
         self.multiplayer_manager = MultiplayerManager(self.client, self.command_handlers)
         if self.is_join_room:
-            room.request_join(self.room_number)
+            room.request_join(self.user_name, self.room_number)
         else:
-            room.request_create()
+            room.request_create(self.user_name)
