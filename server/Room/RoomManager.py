@@ -34,6 +34,12 @@ class RoomManager:
 
         return room_number
     
+    def get_room_of_client(self, client_to_search : Client) -> Room | None:
+        for room in self.occupied_rooms.values():
+            if room.is_client_in_participants(client_to_search):
+                return room
+        return None
+    
     def get_participants_with_client(self, client_to_search : Client) -> list[Participant] | None:
         for room in self.occupied_rooms.values():
             if room.is_client_in_participants(client_to_search):

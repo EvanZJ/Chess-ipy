@@ -12,10 +12,10 @@ class Participant:
     def set_role(self, new_role : Role):
         self.role = new_role
 
-    def switch_piece_color(self):
-        if self.piece_color == PieceColor.WHITE:
+    def switch_piece_color(self, from_color : PieceColor):
+        if from_color == PieceColor.WHITE:
             self.piece_color = PieceColor.BLACK
-        elif self.piece_color == PieceColor.BLACK:
+        elif from_color == PieceColor.BLACK:
             self.piece_color = PieceColor.WHITE
 
     def set_piece_color(self, new_piece_color : PieceColor):
