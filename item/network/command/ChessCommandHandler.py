@@ -16,6 +16,7 @@ class ChessCommandHandler(CommandHandler):
                 self.participant.ready()
                 return True
             if commands[1] == "move":
+                self.participant.on_opponent_move(commands[2])
                 return True
             if commands[1] == "flip":
                 if commands[2] == "white":

@@ -57,6 +57,7 @@ class Board(GameObject):
         self.has_begun : bool = False
 
         self.on_flip_board = Event()
+        self.on_push = Event()
 
     def __awake(self):
         for row in range(8):
@@ -104,6 +105,9 @@ class Board(GameObject):
 
     def begin(self):
         self.has_begun = True
+
+    def can_move(self):
+        return True
         
     def __redraw(self):
         # print("redraw")
@@ -270,18 +274,22 @@ class Board(GameObject):
                 print('here ', self.promotion_ui.tiles[i].square)
                 # self.promotion_ui.tiles[i].on_select += self.__on_select_promotion
         else :
-            self.__push(to_tile, move_piece)
+            self.commit(to_tile, move_piece)
 
     def __promote(self, to_tile : Tile, move : chess.Move, piece_type : chess.PieceType):
         self.promotion_ui.destroy()
         move.promotion = piece_type
-        self.__push(to_tile, move)
+        self.commit(to_tile, move)
 
-    def __push(self, to_tile, move_piece):
-        self.board.push(move_piece)
+    def commit(self, to_tile : Tile, move_piece : chess.Move):
         self.last_move_tile.clear()
         self.last_move_tile.append(self.current_selected_tile.square)
         self.last_move_tile.append(to_tile.square)
+        self.push(move_piece)
+        self.on_push(move_piece)
+
+    def push(self, move_piece : chess.Move):
+        self.board.push(move_piece)
         self.__redraw()
 
     # def __on_select_promotion(self, selected_tile : Tile):
@@ -293,6 +301,8 @@ class Board(GameObject):
         if not self.has_begun:
             return False
         if len(self.move_stack) > 0:
+            return False
+        if not self.can_move():
             return False
         return True
     

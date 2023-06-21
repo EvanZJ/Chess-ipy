@@ -14,6 +14,7 @@ class Participant():
         self.on_change_piece_color = Event()
         self.on_change_role = Event()
         self.on_ready = Event()
+        self.on_opponent_move = Event()
 
     def change_role(self, new_role : Role):
         self.role = new_role

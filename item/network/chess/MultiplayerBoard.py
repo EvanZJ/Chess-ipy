@@ -1,3 +1,4 @@
+import chess
 import pygame as p
 from item.chess.Board import Board
 from item.network.room.Participant import Participant
@@ -15,9 +16,18 @@ class MultiplayerBoard(Board):
         self.on_keyboard_down += self.__on_keyboard_down
         self.on_awake += self.__awake
         self.participant.on_ready += self.__on_ready
+        self.on_push += self.__request_push
+        self.participant.on_opponent_move += self.__on_opponent_move
 
     def __awake(self):
         self.__instantiate_begin_button()
+
+    def can_move(self):
+        if self.board.turn == chess.WHITE and self.participant.piece_color == PieceColor.WHITE:
+            return True
+        elif self.board.turn == chess.BLACK and self.participant.piece_color == PieceColor.BLACK:
+            return True
+        return False
 
     def __instantiate_begin_button(self):
         if self.participant.role != Role.ROOMMASTER:
@@ -38,11 +48,13 @@ class MultiplayerBoard(Board):
         elif self.flipped == True and new_piece_color == PieceColor.WHITE:
             self.flip_board()
 
+    def __on_opponent_move(self, move_uci : str):
+        self.last_move_tile.clear()
+        self.push(chess.Move.from_uci(move_uci))
+
     def __on_keyboard_down(self, event : p.event.Event):
         if event.key == p.K_f:
-            # print('sini')
             self.__request_change_piece_color()
-            # self.__redraw()
 
     def __on_ready(self):
         if self.begin_button is not None:
@@ -64,3 +76,6 @@ class MultiplayerBoard(Board):
             return
         
         self.participant.client.send("chess begin")
+
+    def __request_push(self, move : chess.Move):
+        self.participant.client.send("chess move " + move.uci())

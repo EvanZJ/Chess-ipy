@@ -1,6 +1,7 @@
 from server.Client import Client
 from server.ClientManager import ClientManager
 from server.CommandHandler import CommandHandler
+from server.room.Participant import Participant
 from server.room.PieceColor import PieceColor
 from server.room.RoomManager import RoomManager
 
@@ -23,7 +24,8 @@ class ChessCommandHandler(CommandHandler):
             if commands[1] == "move":
                 participants = self.room_manager.get_participants_with_client(sender)
                 if participants is not None:
-                    client_manager.broadcast(sender, participants, commands)
+                    clients = self.get_clients_from_participants(participants)
+                    client_manager.broadcast(sender, clients, command)
                     return True
                 return False
             if commands[1] == "flip":
@@ -34,3 +36,9 @@ class ChessCommandHandler(CommandHandler):
                     client_manager.unicast(room.challenger.client, "chess flip " + room.challenger.piece_color.value)
                 return True
         return False
+    
+    def get_clients_from_participants(self, participants : list[Participant]):
+        clients : list[Client] = []
+        for participant in participants:
+            clients.append(participant.client)
+        return clients
