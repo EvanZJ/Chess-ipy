@@ -7,6 +7,7 @@ from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.chess.Piece import Piece
 from item.chess.Tile import Tile
+from item.display.ImageLoader import ImageLoader
 from item.ui.TextButton import TextButton
 from item.ui.popup.NotificationFinished import NotificationFinished
 from item.ui.popup.Promotion import PromotionUI
@@ -41,9 +42,11 @@ class Board(GameObject):
                                      ["h6", "g6", "f6", "e6", "d6", "c6", "b6", "a6"],
                                      ["h7", "g7", "f7", "e7", "d7", "c7", "b7", "a7"],
                                      ["h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8"]]
-        infoObject = p.display.Info()
-        self.current_width = infoObject.current_w
-        self.current_height = infoObject.current_h
+        # infoObject = p.display.Info()
+        # self.current_width = infoObject.current_w
+        # self.current_height = infoObject.current_h
+        self.current_width = ImageLoader.get_instance().reference_rect.width
+        self.current_height = ImageLoader.get_instance().reference_rect.height
         self.on_awake += self.__awake
         self.on_keyboard_down += self.__on_keyboard_down
         self.relative_value = 0
@@ -222,8 +225,8 @@ class Board(GameObject):
                 if self.board.turn == chess.WHITE:
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1],
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1],
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -234,8 +237,8 @@ class Board(GameObject):
                 else :
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1] - self.height // 8 * 3,
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1] - self.height // 8 * 3,
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -247,8 +250,8 @@ class Board(GameObject):
                 if self.board.turn == chess.WHITE:
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1] - self.height // 8 * 3,
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1] - self.height // 8 * 3,
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -259,8 +262,8 @@ class Board(GameObject):
                 else :
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1],
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1],
                             self.width // 8,
                             self.height // 8 * 4,
                         ),

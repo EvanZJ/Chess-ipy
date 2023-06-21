@@ -11,4 +11,6 @@ class MultiplayerManager:
 
     def handle(self, response : str):
         for command_handler in self.command_handlers:
-            command_handler.handle(response)
+            if command_handler.handle(response):
+                return True
+        return False

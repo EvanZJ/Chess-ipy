@@ -1,6 +1,7 @@
 import pygame as p
 from item.core.Event import Event
 from item.core.GameObject import GameObject
+from item.display.ImageLoader import ImageLoader
 from item.ui.InputField import InputField
 from item.ui.Text import Text
 from item.ui.TextButton import TextButton
@@ -16,17 +17,25 @@ class JoinRoom(GameObject):
         self.height = height
         self.color = color
         self.border = border
+        self.original_rect = None
 
+        self.on_resize_window += self.__on_resize_window
         self.on_awake += self.__awake
         self.on_draw += self.__draw
 
+    def __on_resize_window(self):
+        if self.original_rect is not None:
+            self.rect = ImageLoader.resize_rect(self.original_rect)
+
     def __awake(self):
-        self.rect = p.Rect(
-            (self.screen.get_width() - self.width) // 2,
-            (self.screen.get_height() - self.height) // 2,
+        self.original_rect = p.Rect(
+            0,
+            0,
             self.width,
             self.height
         )
+        self.original_rect.center = ImageLoader.get_instance().reference_rect.center
+        self.rect = ImageLoader.resize_rect(self.original_rect)
         self.title = self.instantiate(Text("Join Room", 48), self)
         self.title.set_anchor((0.5, 0))
         self.title.set_pivot((0.5, 0))

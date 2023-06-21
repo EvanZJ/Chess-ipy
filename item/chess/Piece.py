@@ -2,12 +2,15 @@ from item.core.GameObject import GameObject
 import chess
 import pygame as p
 
+from item.display.ImageLoader import ImageLoader
+
 class Piece(GameObject):
     def __init__(self, piece : chess.Piece, symbol : str):
         super().__init__()
         self.piece : chess.Piece = piece
         self.symbol : str = symbol
-        self.sprite = p.image.load("resource/images/piece/" + symbol + ".svg")
+        # self.sprite = p.image.load("resource/images/piece/" + symbol + ".svg")
+        self.sprite = ImageLoader.load("resource/images/piece/" + symbol + ".svg")
         self.block_raycast = False
         # self.press_enabled = press_enabled
         # self.on_mouse_down += self.mouse_down

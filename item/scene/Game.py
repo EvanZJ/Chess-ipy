@@ -35,9 +35,9 @@ class Game(GameObject):
         # self.screen.blit(self.relative_value_text.render(), (0, 0))
         # print(self.relative_value_text.text)
         self.finished = self.board.finished
-        print(self.board.result)
+        # print(self.board.result)
 
-        if self.finished:
+        if self.finished and self.notif_popup is None:
             # self.instantiate(PromotionUI(p.Rect( 0, 0, 800, 600), p.Color(255, 255, 255, 100))))
             self.notif_popup = self.instantiate(NotificationFinished(0,0,2, self.board.result + " wins!"), self)
             self.notif_popup.retry_button.on_mouse_down += lambda : self.load_scene(1)
@@ -55,7 +55,7 @@ class Game(GameObject):
             text_size = 48
         ), self)
         button.set_anchor((0.5, 0))
-        button.set_pivot((0.5, 0))
+        button.set_pivot((0, 0))
         button.set_margin(top = top_margin)
         
         return button

@@ -34,7 +34,7 @@ class MultiplayerBoard(Board):
             return
 
         self.begin_button = self.instantiate(TextButton(
-            p.Rect(1150, 200, 220, 60), 
+            p.Rect(0, 80, 220, 60), 
             p.Color(255, 255, 255, 50),
             8,
             text = "Begin", 

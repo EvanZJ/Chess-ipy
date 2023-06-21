@@ -8,12 +8,11 @@ class Text(UI):
         self.size = size
         self.color = color
         self.font = font
-        self.sprite = p.font.Font(font, size).render(text, True, color)
+        self.set_sprite(p.font.Font(font, size).render(text, True, color))
         self.block_raycast = False
         
     def change_text(self, text: str):
-        self.sprite = p.font.Font(self.font, self.size).render(text, True, self.color)
-        self.rect = self.sprite.get_rect()
+        self.set_sprite(p.font.Font(self.font, self.size).render(text, True, self.color))
 
     def set_active(self, value : bool):
         self.enabled = value
