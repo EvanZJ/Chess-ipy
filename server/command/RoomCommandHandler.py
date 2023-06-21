@@ -14,12 +14,12 @@ class RoomCommandHandler(CommandHandler):
         commands = command.split(" ")
         if commands[0] == "room":
             if commands[1] == "create":
-                new_room_number = self.room_manager.create_room(Participant(sender, commands[2]))
+                new_room_number = self.room_manager.create_room(Participant(commands[2], sender))
                 print("Room created successfully : " + str(new_room_number))
                 client_manager.unicast(sender, "room create " + str(new_room_number))
                 return True 
             if commands[1] == "join":
-                if self.room_manager.join_room(int(commands[2]), Participant(sender, commands[3])):
+                if self.room_manager.join_room(int(commands[2]), Participant(commands[3], sender)):
                     client_manager.unicast(sender, "room join " + str(commands[2]))
                     return True
                 return False

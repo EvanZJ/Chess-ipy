@@ -1,26 +1,35 @@
 import socket as so
 
 import pygame as p
-from item.chess.Board import Board
 
 from item.core.GameObject import GameObject
-from item.network.Client import Client
-from item.network.Room.RoomDetail import RoomDetail
-from item.ui.Text import Text
+from item.network.chess.MultiplayerBoard import MultiplayerBoard
+from item.network.room.Participant import Participant
+from item.network.room.PieceColor import PieceColor
+from item.network.room.Role import Role
+from item.network.room.RoomDetail import RoomDetail
 
 class Room(GameObject):
-    def __init__(self, client : Client, user_name : str):
+    def __init__(self, participant : Participant, user_name : str):
         super().__init__()
 
-        self.client : Client = client
+        self.participant : Participant = participant
         self.user_name : str = user_name
 
     def request_create(self, user_name : str):
-        self.client.send("room create " + user_name)
+        self.participant.client.send("room create " + user_name)
 
     def request_join(self, user_name : str, room_number : int):
-        self.client.send("room join " + room_number + " " + user_name)
+        self.participant.client.send("room join " + room_number + " " + user_name)
 
     def create(self, room_number : int):
-        self.instantiate(Board())
+        self.participant.change_role(Role.ROOMMASTER)
+        self.instantiate(MultiplayerBoard(self.participant))
+        self.participant.change_piece_color(PieceColor.WHITE)
+        self.instantiate(RoomDetail(p.Rect(1150, 70, 200, 600), room_number, self.user_name))
+
+    def join(self, room_number : int):
+        self.participant.change_role(Role.CHALLENGER)
+        self.instantiate(MultiplayerBoard(self.participant))
+        self.participant.change_piece_color(PieceColor.BLACK)
         self.instantiate(RoomDetail(p.Rect(1150, 70, 200, 600), room_number, self.user_name))

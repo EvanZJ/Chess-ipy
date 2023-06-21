@@ -3,6 +3,7 @@ import sys
 import time
 import chess
 import pygame as p
+from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.chess.Piece import Piece
 from item.chess.Tile import Tile
@@ -54,6 +55,8 @@ class Board(GameObject):
         self.text = None
         self.result = None
 
+        self.on_flip_board = Event()
+
     def __awake(self):
         for row in range(8):
             for column in range(8):
@@ -86,10 +89,15 @@ class Board(GameObject):
                 self.__redraw()
         if event.key == p.K_f:
             # print('sini')
-            self.__flip_board()
+            self.flip_board()
             # self.__redraw()
-            
 
+    def flip_board(self):
+        self.flipped = not self.flipped
+        
+        self.__redraw()
+        self.on_flip_board()
+        
     def __redraw(self):
         # print("redraw")
         if(self.promotion_ui != None):
@@ -303,11 +311,6 @@ class Board(GameObject):
             return 0
         else:
             return 0
-        
-    def __flip_board(self):
-        self.flipped = not self.flipped
-        
-        self.__redraw()
 
     def __is_promotion(self, piece : Piece, move : chess.Move) -> bool:
         last_rank = 7 if self.board.turn == chess.WHITE else 0
