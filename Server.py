@@ -48,7 +48,7 @@ class Server:
 
     def handle_data(self, receiving_client : Client, data : str):
         for command_handler in self.command_handlers:
-            if command_handler.Handle(receiving_client, self.client_manager, data):
+            if command_handler.handle(receiving_client, self.client_manager, data):
                 print("command executed success: " + data)
                 return
         print("command executed failed: " + data)

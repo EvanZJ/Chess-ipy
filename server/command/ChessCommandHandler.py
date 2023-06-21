@@ -10,9 +10,16 @@ class ChessCommandHandler(CommandHandler):
 
         self.room_manager = room_manager
 
-    def Handle(self, sender : Client, client_manager : ClientManager, command : str) -> bool:
+    def handle(self, sender : Client, client_manager : ClientManager, command : str) -> bool:
         commands = command.split(" ")
         if commands[0] == "chess":
+            if commands[1] == "begin":
+                room = self.room_manager.get_room_of_client(sender)
+                has_begun = room.begin()
+                if has_begun:
+                    client_manager.unicast(sender, "chess begin")
+                    client_manager.unicast(room.challenger.client, "chess begin")
+                return has_begun
             if commands[1] == "move":
                 participants = self.room_manager.get_participants_with_client(sender)
                 if participants is not None:
@@ -23,6 +30,7 @@ class ChessCommandHandler(CommandHandler):
                 room = self.room_manager.get_room_of_client(sender)
                 room.switch_room_master_piece_color()
                 client_manager.unicast(sender, "chess flip " + room.room_master.piece_color.value)
-                client_manager.unicast(room.challenger.client, "chess flip " + room.challenger.piece_color.value)
+                if room.challenger is not None:
+                    client_manager.unicast(room.challenger.client, "chess flip " + room.challenger.piece_color.value)
                 return True
         return False

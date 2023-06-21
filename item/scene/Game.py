@@ -22,6 +22,7 @@ class Game(GameObject):
     def __awake(self):
         self.board = Board()
         self.instantiate(self.board)
+        self.board.begin()
         self.close_button = self.__create_close_button("Back", 0)
         self.relative_value_text = self.__create_relative_value_text(str(self.board.relative_value)) 
         self.close_button.on_mouse_down += lambda : self.load_scene(0)

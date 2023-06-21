@@ -1,15 +1,36 @@
+import pygame as p
 from item.chess.Board import Board
 from item.network.room.Participant import Participant
 from item.network.room.PieceColor import PieceColor
 from item.network.room.Role import Role
+from item.ui.TextButton import TextButton
 
 class MultiplayerBoard(Board):
     def __init__(self, participant : Participant):
         super().__init__()
 
+        self.begin_button = None
         self.participant : Participant = participant
         self.participant.on_change_piece_color += self.__on_change_piece_color
-        self.on_flip_board += self.__on_flip_board
+        self.on_keyboard_down += self.__on_keyboard_down
+        self.on_awake += self.__awake
+        self.participant.on_ready += self.__on_ready
+
+    def __awake(self):
+        self.__instantiate_begin_button()
+
+    def __instantiate_begin_button(self):
+        if self.participant.role != Role.ROOMMASTER:
+            return
+
+        self.begin_button = self.instantiate(TextButton(
+            p.Rect(1150, 200, 220, 60), 
+            p.Color(255, 255, 255, 50),
+            8,
+            text = "Begin", 
+            text_size = 36
+        ))
+        self.begin_button.on_mouse_down += lambda : self.__request_begin()
 
     def __on_change_piece_color(self, new_piece_color : PieceColor):
         if self.flipped == False and new_piece_color == PieceColor.BLACK:
@@ -17,8 +38,29 @@ class MultiplayerBoard(Board):
         elif self.flipped == True and new_piece_color == PieceColor.WHITE:
             self.flip_board()
 
-    def __on_flip_board(self):
+    def __on_keyboard_down(self, event : p.event.Event):
+        if event.key == p.K_f:
+            # print('sini')
+            self.__request_change_piece_color()
+            # self.__redraw()
+
+    def __on_ready(self):
+        if self.begin_button is not None:
+            self.begin_button.set_active(False)
+        self.begin()
+
+    def __request_change_piece_color(self):
+        if self.has_begun:
+            return
         if self.participant.role != Role.ROOMMASTER:
             return
-
+        
         self.participant.client.send("chess flip")
+
+    def __request_begin(self):
+        if self.has_begun:
+            return
+        if self.participant.role != Role.ROOMMASTER:
+            return
+        
+        self.participant.client.send("chess begin")

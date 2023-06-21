@@ -54,6 +54,7 @@ class Board(GameObject):
         self.promote_tiles : Tile = None
         self.text = None
         self.result = None
+        self.has_begun : bool = False
 
         self.on_flip_board = Event()
 
@@ -79,6 +80,9 @@ class Board(GameObject):
     #     return relative_value_text
 # 
     def __on_keyboard_down(self, event : p.event.Event):
+        if not self.has_begun:
+            return
+
         if event.key == p.K_LEFT:
             if len(self.board.move_stack) > 0:
                 self.move_stack.append(self.board.pop())
@@ -97,6 +101,9 @@ class Board(GameObject):
         
         self.__redraw()
         self.on_flip_board()
+
+    def begin(self):
+        self.has_begun = True
         
     def __redraw(self):
         # print("redraw")
@@ -283,7 +290,11 @@ class Board(GameObject):
     #     self.board.push(move_piece)
 
     def __can_interact_with_board(self) -> bool:
-        return len(self.move_stack) <= 0
+        if not self.has_begun:
+            return False
+        if len(self.move_stack) > 0:
+            return False
+        return True
     
     def __get_relative_value(self) -> int :
         relative_value = 0

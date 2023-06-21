@@ -10,6 +10,7 @@ class Room:
         self.challenger : Participant = None
         self.participants : list[Participant] = []
         self.participants.append(self.room_master)
+        self.has_begun : bool = False
 
     def add_participant(self, participant : Participant):
         if self.room_master != participant:
@@ -26,7 +27,17 @@ class Room:
     
     def switch_room_master_piece_color(self):
         self.room_master.switch_piece_color(self.room_master.piece_color)
-        self.challenger.switch_piece_color(self.room_master.piece_color)
+
+        if self.challenger is not None:
+            self.challenger.switch_piece_color(self.room_master.piece_color)
     
     def get_participants(self) -> list[Participant]:
         return self.participants
+    
+    def begin(self) -> bool:
+        if not isinstance(self.room_master, Participant):
+            return False
+        if self.challenger is None:
+            return False
+        self.has_begun = True
+        return True

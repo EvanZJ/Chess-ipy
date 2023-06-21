@@ -7,7 +7,7 @@ class RoomCommandHandler(CommandHandler):
 
         self.room = room
 
-    def Handle(self, command : str) -> bool:
+    def handle(self, command : str) -> bool:
         commands = command.split(" ")
         print(command)
         if commands[0] == "room":

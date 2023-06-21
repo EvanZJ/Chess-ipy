@@ -8,10 +8,13 @@ class ChessCommandHandler(CommandHandler):
 
         self.participant = participant
 
-    def Handle(self, command : str) -> bool:
+    def handle(self, command : str) -> bool:
         commands = command.split(" ")
         print(command)
         if commands[0] == "chess":
+            if commands[1] == "begin":
+                self.participant.ready()
+                return True
             if commands[1] == "move":
                 return True
             if commands[1] == "flip":

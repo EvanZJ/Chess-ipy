@@ -5,5 +5,5 @@ from server.ClientManager import ClientManager
 
 class CommandHandler(ABC):
     @abstractmethod
-    def Handle(self, sender : Client, client_manager : ClientManager, command : str) -> bool:
+    def handle(self, sender : Client, client_manager : ClientManager, command : str) -> bool:
         pass

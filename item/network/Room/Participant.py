@@ -9,9 +9,11 @@ class Participant():
         self.role : Role = Role.WATCHER
         self.piece_color : PieceColor = PieceColor.WHITE
         self.client : Client = client
+        self.is_ready : bool = False
 
         self.on_change_piece_color = Event()
         self.on_change_role = Event()
+        self.on_ready = Event()
 
     def change_role(self, new_role : Role):
         self.role = new_role
@@ -20,3 +22,7 @@ class Participant():
     def change_piece_color(self, new_piece_color : PieceColor):
         self.piece_color = new_piece_color
         self.on_change_piece_color(new_piece_color)
+
+    def ready(self):
+        self.is_ready = True
+        self.on_ready()

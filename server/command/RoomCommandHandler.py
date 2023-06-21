@@ -10,7 +10,7 @@ class RoomCommandHandler(CommandHandler):
 
         self.room_manager = room_manager
 
-    def Handle(self, sender : Client, client_manager : ClientManager, command : str) -> bool:
+    def handle(self, sender : Client, client_manager : ClientManager, command : str) -> bool:
         commands = command.split(" ")
         if commands[0] == "room":
             if commands[1] == "create":
