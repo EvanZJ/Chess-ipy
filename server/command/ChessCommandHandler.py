@@ -35,6 +35,21 @@ class ChessCommandHandler(CommandHandler):
                 if room.challenger is not None:
                     client_manager.unicast(room.challenger.client, "chess flip " + room.challenger.piece_color.value)
                 return True
+            if commands[1] == "restart":
+                participants = self.room_manager.get_participants_with_client(sender)
+                if participants is not None:
+                    clients = self.get_clients_from_participants(participants)
+                    client_manager.broadcast(sender, clients, command)
+                    return True
+                return False
+            if commands[1] == "quit":
+                participants = self.room_manager.get_participants_with_client(sender)
+                if self.room_manager.quit(sender):
+                    print(participants)
+                    if participants is not None:
+                        clients = self.get_clients_from_participants(participants)
+                        client_manager.broadcast(sender, clients, command)
+                return True
         return False
     
     def get_clients_from_participants(self, participants : list[Participant]):

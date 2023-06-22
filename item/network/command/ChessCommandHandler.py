@@ -23,4 +23,11 @@ class ChessCommandHandler(CommandHandler):
                     self.participant.change_piece_color(PieceColor.WHITE)
                 elif commands[2] == "black":
                     self.participant.change_piece_color(PieceColor.BLACK)
+                return True
+            if commands[1] == "restart":
+                self.participant.restart()
+                return True
+            if commands[1] == "quit":
+                self.participant.quit()
+                return True
         return False

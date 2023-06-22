@@ -20,7 +20,9 @@ class MultiplayerBoard(Board):
         self.participant.on_opponent_move += self.__on_opponent_move
 
     def __awake(self):
-        self.__instantiate_begin_button()
+        if self.participant.role == Role.ROOMMASTER:
+            self.__instantiate_button(p.Rect(0, 90, 220, 60), "Begin").on_mouse_down += lambda : self.__request_begin()
+        self.__instantiate_button(p.Rect(0, 130, 220, 60), "Quit").on_mouse_down += lambda : self.__request_quit()
 
     def can_move(self):
         if self.board.turn == chess.WHITE and self.participant.piece_color == PieceColor.WHITE:
@@ -29,18 +31,15 @@ class MultiplayerBoard(Board):
             return True
         return False
 
-    def __instantiate_begin_button(self):
-        if self.participant.role != Role.ROOMMASTER:
-            return
-
+    def __instantiate_button(self, rect : p.Rect, text_str : str):
         self.begin_button = self.instantiate(TextButton(
-            p.Rect(0, 80, 220, 60), 
+            rect, 
             p.Color(255, 255, 255, 50),
             8,
-            text = "Begin", 
-            text_size = 36
+            text = text_str, 
+            text_size = 48
         ))
-        self.begin_button.on_mouse_down += lambda : self.__request_begin()
+        return self.begin_button
 
     def __on_change_piece_color(self, new_piece_color : PieceColor):
         if self.flipped == False and new_piece_color == PieceColor.BLACK:
@@ -79,3 +78,7 @@ class MultiplayerBoard(Board):
 
     def __request_push(self, move : chess.Move):
         self.participant.client.send("chess move " + move.uci())
+
+    def __request_quit(self):
+        self.participant.client.send("chess quit")
+        self.participant.quit()

@@ -17,6 +17,9 @@ class MainMenu(GameObject):
         logo = p.image.load("resource/images/logo.png")
         self.original_logo : p.Surface = p.transform.scale(logo, (int(logo.get_width() * 0.75), int(logo.get_height() * 0.75)))
 
+        self.background = None
+        self.logo = None
+
         self.on_resize_window += self.__reload_asset
         self.on_awake += self.__awake
         self.on_draw += self.__draw
@@ -35,8 +38,10 @@ class MainMenu(GameObject):
         self.room.set_active(False)
 
     def __draw(self):
-        ImageLoader.draw(self.background, (0, 0))
-        ImageLoader.draw(self.logo, (720, 325))
+        if self.background is not None:
+            ImageLoader.draw(self.background, (0, 0))
+        if self.logo is not None:
+            ImageLoader.draw(self.logo, (720, 325))
         # self.screen.blit(self.background, (0, 0))
         # self.screen.blit(self.logo, (720, 325))
 

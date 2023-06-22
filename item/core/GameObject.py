@@ -14,7 +14,7 @@ class GameObject:
         self.screen: p.Surface
         self.rect: p.Rect = None
         self.order_layer: int = 0
-        self.enabled : bool = True
+        self.enabled : bool = False
         self.block_raycast : bool = True
         self.children : list['GameObject'] = []
         self.parent : 'GameObject' = None

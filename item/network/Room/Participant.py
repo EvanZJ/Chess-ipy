@@ -10,11 +10,14 @@ class Participant():
         self.piece_color : PieceColor = PieceColor.WHITE
         self.client : Client = client
         self.is_ready : bool = False
+        self.has_quit : bool = False
 
         self.on_change_piece_color = Event()
         self.on_change_role = Event()
         self.on_ready = Event()
         self.on_opponent_move = Event()
+        self.on_restart = Event()
+        self.on_quit = Event()
 
     def change_role(self, new_role : Role):
         self.role = new_role
@@ -27,3 +30,12 @@ class Participant():
     def ready(self):
         self.is_ready = True
         self.on_ready()
+
+    def restart(self):
+        self.is_ready = False
+        self.on_restart()
+
+    def quit(self):
+        if not self.has_quit:
+            self.has_quit = True
+            self.on_quit()

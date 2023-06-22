@@ -1,6 +1,7 @@
 import random
 from server.Client import Client
 from server.room.Participant import Participant
+from server.room.Role import Role
 from server.room.Room import Room
 
 class RoomManager:
@@ -45,3 +46,19 @@ class RoomManager:
             if room.is_client_in_participants(client_to_search):
                 return room.get_participants()
         return None
+    
+    def quit(self, client : Client) -> bool:
+        room = self.get_room_of_client(client)
+        if room is None:
+            return False
+        
+        participant = room.get_participant_from_client(client)
+        if participant is None:
+            return False
+        
+        room.quit(participant)
+        if participant.role == Role.PLAYER:
+            self.release_room(room.key)
+            return True
+        
+        return False

@@ -32,6 +32,7 @@ class Engine:
         game_object.on_resize_window()
         game_object.on_awake()
         game_object.on_start()
+        game_object.set_active(True)
 
     def destroy_all(self):
         for game_objects in self.ordered_game_objects_cache.values():

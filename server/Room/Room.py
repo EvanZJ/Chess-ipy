@@ -41,3 +41,15 @@ class Room:
             return False
         self.has_begun = True
         return True
+    
+    def get_participant_from_client(self, client : Client) -> Participant | None:
+        for participant in self.participants:
+            if participant.client == client:
+                return participant
+        return None
+    
+    def quit(self, participant : Participant):
+        if participant not in self.participants:
+            return
+        
+        self.participants.remove(participant)
