@@ -3,11 +3,14 @@ import pygame as p
 from item.core.Event import Event
 from typing import TypeVar
 
+from item.display.ImageLoader import ImageLoader
+
 class GameObject:
     T = TypeVar('T', bound='GameObject')
 
     def __init__(self):
         self.sprite: p.Surface = None
+        self.resized_sprite: p.Surface = None
         self.screen: p.Surface
         self.rect: p.Rect = None
         self.order_layer: int = 0
@@ -15,7 +18,10 @@ class GameObject:
         self.block_raycast : bool = True
         self.children : list['GameObject'] = []
         self.parent : 'GameObject' = None
+        self.coordinate : tuple[int, int] = (0, 0)
+        self.scale_xy : tuple[float, float] = None
         
+        self.on_resize_window = Event()
         self.on_awake = Event()
         self.on_draw = Event()
         self.on_start = Event()
@@ -30,28 +36,32 @@ class GameObject:
         self.on_keyboard_down = Event()
         self.on_enable = Event()
         self.on_disable = Event()
+        self.on_rect_change = Event()
         
+        self.on_resize_window += self.__on_resize_window
         self.on_awake += self.__awake
         self.on_draw += self.__draw
 
         # print(self.on_draw)
 
+    def __on_resize_window(self):
+        self.__resize()
+
     def __awake(self):
-        if(self.sprite is not None):
-            self.rect = self.sprite.get_rect()
+        if(self.resized_sprite is not None):
+            self.rect = self.resized_sprite.get_rect()
 
     def __draw(self):
-        if(self.sprite is None):
+        if(self.resized_sprite is None):
             return
         if(self.rect is None):    
             return
         
-        scaled_sprite = p.transform.scale(self.sprite, (self.rect.width, self.rect.height))
-        self.screen.blit(scaled_sprite, self.rect)
+        self.screen.blit(self.resized_sprite.copy(), self.rect)
 
     def scale(self, width : int, height : int):
-        self.rect.width = width
-        self.rect.height = height
+        self.scale_xy = (width, height)
+        self.__resize()
 
     def move(self, x : float, y : float):
         if isinstance(self.rect, p.Rect):
@@ -90,3 +100,44 @@ class GameObject:
             self.on_enable()
         else:
             self.on_disable()
+
+    def set_sprite(self, sprite : p.Surface):
+        self.sprite = sprite
+        self.__resize()
+
+    def set_coordinate(self, new_coordinate : tuple[int, int]):
+        self.coordinate = new_coordinate
+        self.__resize()
+
+    def __resize(self):
+        if self.sprite is None:
+            return
+        
+        self.resized_sprite = self.__resize_sprite(self.sprite)
+
+        if self.scale_xy is not None:
+            self.resized_sprite = ImageLoader.scale(
+                self.resized_sprite, 
+                (self.sprite.get_width(), self.sprite.get_height()), 
+                self.scale_xy
+            )
+
+        self.__resize_rect(self.resized_sprite)
+
+    def __resize_sprite(self, sprite : p.Surface) -> p.Surface:
+        if sprite is None:
+            return
+        
+        return ImageLoader.resize_surface(sprite)
+    
+    def __resize_rect(self, sprite : p.Surface):
+        if sprite is None:
+            return
+        if self.rect is None:
+            return
+        
+        self.rect = sprite.get_rect()
+        x = ImageLoader.resize(self.coordinate[0], True)
+        y = ImageLoader.resize(self.coordinate[1], False)
+        self.rect.topleft = (x, y)
+        self.on_rect_change()

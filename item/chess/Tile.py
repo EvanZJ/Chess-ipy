@@ -4,13 +4,15 @@ from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.chess.LegalMoveCircle import LegalMoveCircle
 from item.chess.Piece import Piece
+from item.display.ImageLoader import ImageLoader
 
 class Tile(GameObject):
     def __init__(self, color : p.Color, rect : p.Rect, square : chess.Square):
         super().__init__()
         self.color : p.Color = color
         self.original_color : p.Color = color
-        self.rect = rect
+        self.original_rect = rect
+        self.rect = ImageLoader.resize_rect(self.original_rect)
         self.square : chess.Square = square
         self.legal_move_circle : LegalMoveCircle = None
 
@@ -18,13 +20,17 @@ class Tile(GameObject):
 
         self.on_select = Event()
         
+        self.on_resize_window += self.__on_resize_window
         self.on_awake += self.__awake
         self.on_draw += self.__draw
         self.on_mouse_down += self.select
         self.on_destroy += self.__destroy
 
+    def __on_resize_window(self):
+        self.rect = ImageLoader.resize_rect(self.original_rect)
+
     def __awake(self):
-        self.legal_move_circle = self.instantiate(LegalMoveCircle(self.rect))
+        self.legal_move_circle = self.instantiate(LegalMoveCircle(self.original_rect))
         self.legal_move_circle.change_order_layer(2)
         self.legal_move_circle.enabled = False
 
@@ -36,7 +42,7 @@ class Tile(GameObject):
             return False
         
         self.piece = piece
-        piece.move(self.rect.topleft[0], self.rect.topleft[1])
+        piece.set_coordinate((self.original_rect.topleft[0], self.original_rect.topleft[1]))
         return True
     
     def deattach_piece(self) -> Piece:

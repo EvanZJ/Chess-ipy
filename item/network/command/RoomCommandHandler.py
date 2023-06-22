@@ -1,5 +1,5 @@
 from item.network.CommandHandler import CommandHandler
-from item.network.Room.Room import Room
+from item.network.room.Room import Room
 
 class RoomCommandHandler(CommandHandler):
     def __init__(self, room : Room) -> None:
@@ -7,7 +7,7 @@ class RoomCommandHandler(CommandHandler):
 
         self.room = room
 
-    def Handle(self, command : str) -> bool:
+    def handle(self, command : str) -> bool:
         commands = command.split(" ")
         print(command)
         if commands[0] == "room":
@@ -15,6 +15,6 @@ class RoomCommandHandler(CommandHandler):
                 self.room.create(int(commands[2]))
                 return True
             if commands[1] == "join":
-                self.room.create(int(commands[2]))
+                self.room.join(int(commands[2]))
                 return True
         return False

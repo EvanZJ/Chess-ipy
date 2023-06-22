@@ -3,9 +3,11 @@ import sys
 import time
 import chess
 import pygame as p
+from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.chess.Piece import Piece
 from item.chess.Tile import Tile
+from item.display.ImageLoader import ImageLoader
 from item.ui.TextButton import TextButton
 from item.ui.popup.NotificationFinished import NotificationFinished
 from item.ui.popup.Promotion import PromotionUI
@@ -40,9 +42,11 @@ class Board(GameObject):
                                      ["h6", "g6", "f6", "e6", "d6", "c6", "b6", "a6"],
                                      ["h7", "g7", "f7", "e7", "d7", "c7", "b7", "a7"],
                                      ["h8", "g8", "f8", "e8", "d8", "c8", "b8", "a8"]]
-        infoObject = p.display.Info()
-        self.current_width = infoObject.current_w
-        self.current_height = infoObject.current_h
+        # infoObject = p.display.Info()
+        # self.current_width = infoObject.current_w
+        # self.current_height = infoObject.current_h
+        self.current_width = ImageLoader.get_instance().reference_rect.width
+        self.current_height = ImageLoader.get_instance().reference_rect.height
         self.on_awake += self.__awake
         self.on_keyboard_down += self.__on_keyboard_down
         self.relative_value = 0
@@ -53,6 +57,10 @@ class Board(GameObject):
         self.promote_tiles : Tile = None
         self.text = None
         self.result = None
+        self.has_begun : bool = False
+
+        self.on_flip_board = Event()
+        self.on_push = Event()
 
     def __awake(self):
         for row in range(8):
@@ -76,6 +84,9 @@ class Board(GameObject):
     #     return relative_value_text
 # 
     def __on_keyboard_down(self, event : p.event.Event):
+        if not self.has_begun:
+            return
+
         if event.key == p.K_LEFT:
             if len(self.board.move_stack) > 0:
                 self.move_stack.append(self.board.pop())
@@ -86,10 +97,21 @@ class Board(GameObject):
                 self.__redraw()
         if event.key == p.K_f:
             # print('sini')
-            self.__flip_board()
+            self.flip_board()
             # self.__redraw()
-            
 
+    def flip_board(self):
+        self.flipped = not self.flipped
+        
+        self.__redraw()
+        self.on_flip_board()
+
+    def begin(self):
+        self.has_begun = True
+
+    def can_move(self):
+        return True
+        
     def __redraw(self):
         # print("redraw")
         if(self.promotion_ui != None):
@@ -203,8 +225,8 @@ class Board(GameObject):
                 if self.board.turn == chess.WHITE:
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1],
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1],
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -215,8 +237,8 @@ class Board(GameObject):
                 else :
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1] - self.height // 8 * 3,
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1] - self.height // 8 * 3,
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -228,8 +250,8 @@ class Board(GameObject):
                 if self.board.turn == chess.WHITE:
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1] - self.height // 8 * 3,
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1] - self.height // 8 * 3,
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -240,8 +262,8 @@ class Board(GameObject):
                 else :
                     self.promotion_ui = self.__instantiate_promotion_ui(
                         p.Rect(
-                            to_tile.rect.topleft[0],
-                            to_tile.rect.topleft[1],
+                            to_tile.original_rect.topleft[0],
+                            to_tile.original_rect.topleft[1],
                             self.width // 8,
                             self.height // 8 * 4,
                         ),
@@ -255,18 +277,22 @@ class Board(GameObject):
                 print('here ', self.promotion_ui.tiles[i].square)
                 # self.promotion_ui.tiles[i].on_select += self.__on_select_promotion
         else :
-            self.__push(to_tile, move_piece)
+            self.commit(to_tile, move_piece)
 
     def __promote(self, to_tile : Tile, move : chess.Move, piece_type : chess.PieceType):
         self.promotion_ui.destroy()
         move.promotion = piece_type
-        self.__push(to_tile, move)
+        self.commit(to_tile, move)
 
-    def __push(self, to_tile, move_piece):
-        self.board.push(move_piece)
+    def commit(self, to_tile : Tile, move_piece : chess.Move):
         self.last_move_tile.clear()
         self.last_move_tile.append(self.current_selected_tile.square)
         self.last_move_tile.append(to_tile.square)
+        self.push(move_piece)
+        self.on_push(move_piece)
+
+    def push(self, move_piece : chess.Move):
+        self.board.push(move_piece)
         self.__redraw()
 
     # def __on_select_promotion(self, selected_tile : Tile):
@@ -275,7 +301,13 @@ class Board(GameObject):
     #     self.board.push(move_piece)
 
     def __can_interact_with_board(self) -> bool:
-        return len(self.move_stack) <= 0
+        if not self.has_begun:
+            return False
+        if len(self.move_stack) > 0:
+            return False
+        if not self.can_move():
+            return False
+        return True
     
     def __get_relative_value(self) -> int :
         relative_value = 0
@@ -303,11 +335,6 @@ class Board(GameObject):
             return 0
         else:
             return 0
-        
-    def __flip_board(self):
-        self.flipped = not self.flipped
-        
-        self.__redraw()
 
     def __is_promotion(self, piece : Piece, move : chess.Move) -> bool:
         last_rank = 7 if self.board.turn == chess.WHITE else 0

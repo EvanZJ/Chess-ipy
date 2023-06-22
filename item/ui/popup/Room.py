@@ -1,5 +1,6 @@
 import pygame as p
 from item.core.GameObject import GameObject
+from item.display.ImageLoader import ImageLoader
 from item.ui.Text import Text
 from item.ui.TextButton import TextButton
 from item.ui.button.CloseButton import CloseButton
@@ -14,19 +15,27 @@ class Room(GameObject):
         self.height = height
         self.color = color
         self.border = border
+        self.original_rect = None
 
+        self.on_resize_window += self.__on_resize_window
         self.on_awake += self.__awake
         self.on_draw += self.__draw
         self.on_enable += self.__on_enable
         self.on_disable += self.__on_disable
 
+    def __on_resize_window(self):
+        if self.original_rect is not None:
+            self.rect = ImageLoader.resize_rect(self.original_rect)
+
     def __awake(self):
-        self.rect = p.Rect(
-            (self.screen.get_width() - self.width) // 2,
-            (self.screen.get_height() - self.height) // 2,
+        self.original_rect = p.Rect(
+            0,
+            0,
             self.width,
             self.height
         )
+        self.original_rect.center = ImageLoader.get_instance().reference_rect.center
+        self.rect = ImageLoader.resize_rect(self.original_rect)
         self.title = self.instantiate(Text("Room", 48), self)
         self.title.set_anchor((0.5, 0))
         self.title.set_pivot((0.5, 0))
@@ -35,7 +44,7 @@ class Room(GameObject):
         self.create_room_button = self.__create_button("Create Room", 200)
         self.create_room_button.on_mouse_down += lambda : self.instantiate(CreateRoom(600, 400, p.Color(55, 56, 85, 255)))
 
-        self.join_room_button = self.__create_button("Join Room", 500)
+        self.join_room_button = self.__create_button("Join Room", 350)
         self.join_room_button.on_mouse_down += lambda : self.instantiate(JoinRoom(600, 400, p.Color(55, 56, 85, 255)))
         
         self.__create_close_button()

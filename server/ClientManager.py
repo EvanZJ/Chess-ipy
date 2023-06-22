@@ -16,15 +16,13 @@ class ClientManager():
             client.join()
 
     def unicast(self, receiver : Client, data : str):
-        print("test")
         if receiver not in self.clients:
             return
 
-        print("test2")        
         receiver.socket.send(data.encode())
 
-    def broadcast(self, sender : Client, data : str):
-        for client in self.clients :
+    def broadcast(self, sender : Client, clients_to_send : list[Client], data : str):
+        for client in clients_to_send :
             if client == sender:
                 continue
 
