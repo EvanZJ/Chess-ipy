@@ -1,12 +1,14 @@
 from item.core.GameObject import GameObject
 from item.display.ImageLoader import ImageLoader
+from item.network.Client import Client
 from item.ui.chat.ChatUI import ChatUI
 import pygame as p
 
 class Chat(GameObject):
-    def __init__(self, user : str):
+    def __init__(self, client : Client, user : str):
         super().__init__()
 
+        self.client = client
         self.user = user
         self.block_raycast = False
         
@@ -27,6 +29,10 @@ class Chat(GameObject):
         self.chat.set_anchor((0, 1))
         self.chat.set_pivot((0, 1))
         self.chat.set_margin(bottom = 50, left = 50)
+        self.chat.on_user_message_enter += lambda user, message : self.client.send(["chat", "sendall", user, message])
 
-        self.chat.add_message("John", "Bwahahaha")
-        self.chat.add_message("Test", "Yuhu")
+        # self.chat.add_message("John", "Bwahahaha")
+        # self.chat.add_message("Test", "Yuhu")
+
+    def add_message(self, sender : str, message : str):
+        self.chat.add_message(sender, message)

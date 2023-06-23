@@ -72,7 +72,8 @@ class Room(GameObject):
         self.create_room(room_number)
 
     def create_room(self, room_number : int):
-        self.instantiate(Chat(self.user_name))
+        self.chat = self.instantiate(Chat(self.participant.client, self.user_name))
+        self.participant.on_receive_chat += self.chat.add_message
         self.instantiate(RoomDetail(p.Rect(1200, 90, 200, 600), room_number, self.user_name))
         self.relative_value_text = self.__create_relative_value_text(str(self.board.relative_value))
 

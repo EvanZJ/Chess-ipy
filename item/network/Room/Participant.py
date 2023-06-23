@@ -18,6 +18,7 @@ class Participant():
         self.on_opponent_move = Event()
         self.on_restart = Event()
         self.on_quit = Event()
+        self.on_receive_chat = Event()
 
     def change_role(self, new_role : Role):
         self.role = new_role
@@ -39,3 +40,6 @@ class Participant():
         if not self.has_quit:
             self.has_quit = True
             self.on_quit()
+
+    def receive_chat(self, sender : str, message : str):
+        self.on_receive_chat(sender, message)

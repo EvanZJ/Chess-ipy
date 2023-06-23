@@ -1,6 +1,7 @@
 from item.core.GameObject import GameObject
 from item.network.Client import Client
 from item.network.MultiplayerManager import MultiplayerManager
+from item.network.command.ChatCommandHandler import ChatCommandHandler
 from item.network.command.ChessCommandHandler import ChessCommandHandler
 from item.network.room.Participant import Participant
 from item.network.room.Room import Room
@@ -24,7 +25,8 @@ class MultiplayerGame(GameObject):
 
         self.command_handlers = [
             RoomCommandHandler(room),
-            ChessCommandHandler(participant)
+            ChessCommandHandler(participant),
+            ChatCommandHandler(participant)
         ]
 
         self.multiplayer_manager = MultiplayerManager(self.client, self.command_handlers)
