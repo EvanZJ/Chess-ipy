@@ -49,7 +49,7 @@ class JoinRoom(GameObject):
         for input_field in self.inputs:
             input_field.on_focus += self.on_focus_input
 
-        self.__create_button("Join", 50).on_mouse_down += lambda : self.load_scene(2, name_input.user_input, True, room_input.user_input)
+        self.__create_button("Join", 50).on_mouse_down += lambda event : self.load_scene(2, name_input.user_input, True, room_input.user_input)
         
         self.__create_close_button()
 
@@ -87,7 +87,7 @@ class JoinRoom(GameObject):
         self.close_button.set_anchor((1, 0))
         self.close_button.set_pivot((1, 0))
         self.close_button.set_margin(top = 20, right = 20)
-        self.close_button.on_mouse_down += self.destroy
+        self.close_button.on_mouse_down += lambda event : self.destroy()
 
     def on_focus_input(self, focused_input_field : InputField):
         for input_field in self.inputs:

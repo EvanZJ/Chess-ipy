@@ -53,7 +53,7 @@ class Tile(GameObject):
         self.piece = None
         return deattached_piece
     
-    def select(self):
+    def select(self, event : p.event.Event):
         self.on_select(self)
         self.set_legal_move(False)
 

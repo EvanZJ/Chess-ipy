@@ -15,7 +15,6 @@ class ChatUI(UI):
         self.border = border
         self.messages_ori : list[tuple[str, str]] = []
         self.messages : list[Text] = []
-        self.spacing : float = 20
         self.padding : tuple[float, float, float, float]
 
         self.on_resize_window += self.__on_resize_window
@@ -40,10 +39,6 @@ class ChatUI(UI):
         new_message = self.instantiate(Text(sender + ": " + message, 42, p.Color("black")))
         self.scroll_view.append(new_message)
         new_message.change_order_layer(52) 
-        top_margin = 0
-        for past_message in self.messages:
-            top_margin += past_message.sprite.get_rect().height + self.spacing
-        new_message.set_margin(top = top_margin)
         self.messages.append(new_message)
 
     def __instantiate_scroll_view(self):

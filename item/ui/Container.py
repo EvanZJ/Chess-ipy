@@ -9,6 +9,7 @@ class Container(UI):
         self.original_rect = rect
 
         self.change_order_layer(100)
+        self.block_raycast = False
 
         self.on_resize_window += self.__on_resize_window
     

@@ -42,7 +42,7 @@ class InputField(TextButton):
             if not self.user_input:
                 self.text.change_text(self.placeholder)
 
-    def focus(self):
+    def focus(self, event : p.event.Event):
         self.set_focus(True)
         self.on_focus(self)
 

@@ -45,10 +45,10 @@ class MainMenu(GameObject):
         # self.screen.blit(self.background, (0, 0))
         # self.screen.blit(self.logo, (720, 325))
 
-    def play_local(self):
+    def play_local(self, event : p.event.Event):
         self.load_scene(1)
 
-    def enable_room(self):
+    def enable_room(self, event : p.event.Event):
         self.room.set_active(True)
 
 

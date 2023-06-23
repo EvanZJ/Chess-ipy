@@ -25,7 +25,7 @@ class Game(GameObject):
         self.board.begin()
         self.close_button = self.__create_close_button("Back", 0)
         self.relative_value_text = self.__create_relative_value_text(str(self.board.relative_value)) 
-        self.close_button.on_mouse_down += lambda : self.load_scene(0)
+        self.close_button.on_mouse_down += lambda event : self.load_scene(0)
 
     def __destroy(self, game_object : GameObject):
         self.board = None
@@ -40,7 +40,7 @@ class Game(GameObject):
         if self.finished and self.notif_popup is None:
             # self.instantiate(PromotionUI(p.Rect( 0, 0, 800, 600), p.Color(255, 255, 255, 100))))
             self.notif_popup = self.instantiate(NotificationFinished(0,0,2, self.board.result + " wins!"), self)
-            self.notif_popup.retry_button.on_mouse_down += lambda : self.load_scene(1)
+            self.notif_popup.retry_button.on_mouse_down += lambda event : self.load_scene(1)
 
     def __on_keyboard_down(self, event : p.event.Event):
         if event.key == p.K_ESCAPE:

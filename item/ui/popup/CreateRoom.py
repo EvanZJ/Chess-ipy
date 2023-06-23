@@ -40,7 +40,7 @@ class CreateRoom(GameObject):
 
         self.name_input = self.__create_input_field("Name", 160)
         self.create_button = self.__create_button("Create", 50)
-        self.create_button.on_mouse_down += lambda : self.load_scene(2, self.name_input.user_input)
+        self.create_button.on_mouse_down += lambda event : self.load_scene(2, self.name_input.user_input)
         
         self.__create_close_button()
 
@@ -78,4 +78,4 @@ class CreateRoom(GameObject):
         self.close_button.set_anchor((1, 0))
         self.close_button.set_pivot((1, 0))
         self.close_button.set_margin(top = 20, right = 20)
-        self.close_button.on_mouse_down += self.destroy
+        self.close_button.on_mouse_down += lambda event : self.destroy()
