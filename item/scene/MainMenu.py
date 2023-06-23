@@ -1,10 +1,12 @@
 import pygame as p
 from item.core.GameObject import GameObject
 from item.display.ImageLoader import ImageLoader
+from item.ui.TextButton import TextButton
 from item.ui.button.PlayLocalButton import PlayLocalButton
 from item.ui.button.PlayOnlineButton import PlayOnlineButton
 from item.ui.button.WatchGameButton import WatchGameButton
 from item.ui.button.QuitButton import QuitButton
+from item.ui.popup.LoadMatch import LoadMatch
 from item.ui.popup.NotificationFinished import NotificationFinished
 from item.scene.Game import Game
 from item.ui.popup.Room import Room
@@ -33,6 +35,9 @@ class MainMenu(GameObject):
         self.instantiate(PlayOnlineButton(100, 250, 0.75)).on_mouse_down += self.enable_room
         self.instantiate(WatchGameButton(100, 400, 0.75))
         self.instantiate(QuitButton(100, 550, 0.75))
+        load_button = self.instantiate(TextButton(p.Rect(0, 0, 100, 50), p.Color("black"), 32, "Load", 36))
+        load_button.set_margin(left = 1450, top = 25)
+        load_button.on_mouse_down += lambda event : self.instantiate(LoadMatch(900, 700, p.Color(55, 56, 85, 255)))
 
         self.room = self.instantiate(Room(600, 550, p.Color(55, 56, 85, 255)))
         self.room.set_active(False)

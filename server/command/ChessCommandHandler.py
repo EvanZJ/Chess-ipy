@@ -54,6 +54,7 @@ class ChessCommandHandler(CommandHandler):
             if commands[1] == "save":
                 room = self.room_manager.get_room_of_client(sender)
                 client_manager.unicast(sender, ["chess", "save", room.chess_board.serialize()])
+                return True
         return False
     
     def get_clients_from_participants(self, participants : list[Participant]):
