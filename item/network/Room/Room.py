@@ -3,6 +3,7 @@ import socket as so
 import pygame as p
 
 from item.core.GameObject import GameObject
+from item.network.chat.Chat import Chat
 from item.network.chess.MultiplayerBoard import MultiplayerBoard
 from item.network.room.Participant import Participant
 from item.network.room.PieceColor import PieceColor
@@ -69,6 +70,7 @@ class Room(GameObject):
         self.create_room(room_number)
 
     def create_room(self, room_number : int):
+        self.instantiate(Chat(self.user_name))
         self.instantiate(RoomDetail(p.Rect(1200, 90, 200, 600), room_number, self.user_name))
         self.relative_value_text = self.__create_relative_value_text(str(self.board.relative_value))
 

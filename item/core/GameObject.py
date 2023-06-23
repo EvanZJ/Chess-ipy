@@ -81,6 +81,8 @@ class GameObject:
         old_order_layer = self.order_layer
         self.order_layer = new_order_layer
         self.on_change_order_layer(self, old_order_layer, new_order_layer)
+        for child in self.children:
+            child.change_order_layer(new_order_layer + 1)
 
     def destroy(self):
         for child in self.children:
