@@ -25,10 +25,10 @@ class Chat(GameObject):
 
     def __awake(self):
         self.change_order_layer(-1)
-        self.chat = self.instantiate(ChatUI(self.user, p.Rect(0, 0, 500, 700), p.Color(72, 99, 156)), self)
+        self.chat = self.instantiate(ChatUI(self.user, p.Rect(0, 0, 375, 625), p.Color(72, 99, 156)), self)
         self.chat.set_anchor((0, 1))
         self.chat.set_pivot((0, 1))
-        self.chat.set_margin(bottom = 50, left = 50)
+        self.chat.set_margin(bottom = 50, left = 25)
         self.chat.on_user_message_enter += lambda user, message : self.client.send(["chat", "sendall", user, message])
 
         # self.chat.add_message("John", "Bwahahaha")

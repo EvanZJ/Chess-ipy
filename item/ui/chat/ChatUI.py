@@ -36,7 +36,7 @@ class ChatUI(UI):
 
     def add_message(self, sender : str, message : str):
         self.messages_ori.append((sender, message))
-        new_message = self.instantiate(Text(sender + ": " + message, 42, p.Color("black")))
+        new_message = self.instantiate(Text(sender + ": " + message, 38, p.Color("black")))
         self.scroll_view.append(new_message)
         new_message.change_order_layer(52) 
         self.messages.append(new_message)
@@ -45,7 +45,7 @@ class ChatUI(UI):
         scroll_view_rect = self.original_rect.copy()
         scroll_view_rect.width -= 50
         scroll_view_rect.height -= 125
-        self.scroll_view = self.instantiate(ScrollView(scroll_view_rect, p.Color(245, 210, 103), 0, (30, 30)), self)
+        self.scroll_view = self.instantiate(ScrollView(scroll_view_rect, p.Color(245, 210, 103), 0, (20, 20)), self)
         self.change_order_layer(50)
         self.scroll_view.change_order_layer(51)
         self.scroll_view.set_anchor((0.5, 0))
@@ -53,7 +53,7 @@ class ChatUI(UI):
         self.scroll_view.set_margin(top = 25)
 
     def __instantiate_input_field(self):
-        self.input_field = self.instantiate(InputField(p.Rect(0, 0, self.scroll_view.original_rect.width, 50), placeholder = "Enter something...", placeholder_size = 32), self)
+        self.input_field = self.instantiate(InputField(p.Rect(0, 0, self.scroll_view.original_rect.width, 38), placeholder = "Enter something...", placeholder_size = 32), self)
         self.input_field.set_anchor((0.5, 1))
         self.input_field.set_pivot((0.5, 1))
         self.input_field.set_margin(bottom = 25)
