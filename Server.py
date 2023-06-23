@@ -46,12 +46,12 @@ class Server:
         # for client in self.clients:
         #     client.join()
 
-    def handle_data(self, receiving_client : Client, data : str):
+    def handle_data(self, receiving_client : Client, data : list[str]):
         for command_handler in self.command_handlers:
             if command_handler.handle(receiving_client, self.client_manager, data):
-                print("command executed success: " + data)
+                print("command executed success: " + str(data))
                 return
-        print("command executed failed: " + data)
+        print("command executed failed: " + str(data))
 
 room_manager = RoomManager()
 command_handlers : list[CommandHandler] = {

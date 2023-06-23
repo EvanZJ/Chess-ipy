@@ -9,7 +9,7 @@ class MultiplayerManager:
 
         self.client.run()
 
-    def handle(self, response : str):
+    def handle(self, response : list[str]):
         for command_handler in self.command_handlers:
             if command_handler.handle(response):
                 return True

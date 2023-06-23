@@ -3,6 +3,8 @@ import threading
 
 from item.core.Event import Event
 
+SEPERATOR = "<SEPERATOR>"
+
 class Client:
     def __init__(self, host : str, port : int):
         self.socket : so.socket = so.socket(so.AF_INET, so.SOCK_STREAM)
@@ -20,14 +22,16 @@ class Client:
         self.threads.append(readT)
         readT.start()
 
-    def send(self, data : str):
+    def send(self, data : list[str]):
         # while True:
-        self.socket.send(data.encode())
+        command = SEPERATOR.join(data)
+        self.socket.send(command.encode())
         
     def read(self):
         while True:
             data : str = self.socket.recv(self.buffer_size).decode()
-            self.on_read_data(data)
+            command = data.split(SEPERATOR)
+            self.on_read_data(command)
 
     def stop(self):
         for thread in self.threads:

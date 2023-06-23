@@ -66,7 +66,8 @@ class MultiplayerBoard(Board):
         if self.participant.role != Role.ROOMMASTER:
             return
         
-        self.participant.client.send("chess flip")
+        # self.participant.client.send("chess flip")
+        self.participant.client.send(["chess", "flip"])
 
     def __request_begin(self):
         if self.has_begun:
@@ -74,11 +75,14 @@ class MultiplayerBoard(Board):
         if self.participant.role != Role.ROOMMASTER:
             return
         
-        self.participant.client.send("chess begin")
+        # self.participant.client.send("chess begin")
+        self.participant.client.send(["chess", "begin"])
 
     def __request_push(self, move : chess.Move):
-        self.participant.client.send("chess move " + move.uci())
+        # self.participant.client.send("chess move " + move.uci())
+        self.participant.client.send(["chess", "move", move.uci()])
 
     def __request_quit(self):
-        self.participant.client.send("chess quit")
+        # self.participant.client.send("chess quit")
+        self.participant.client.send(["chess", "quit"])
         self.participant.quit()

@@ -50,10 +50,12 @@ class Room(GameObject):
 
     def request_create(self, user_name : str):
         print("Username: " + user_name)
-        self.participant.client.send("room create " + user_name)
+        # self.participant.client.send("room create " + user_name)
+        self.participant.client.send(["room", "create", user_name])
 
     def request_join(self, user_name : str, room_number : int):
-        self.participant.client.send("room join " + room_number + " " + user_name)
+        # self.participant.client.send("room join " + room_number + " " + user_name)
+        self.participant.client.send(["room", "join", room_number, user_name])
 
     def create(self, room_number : int):
         print("a")
