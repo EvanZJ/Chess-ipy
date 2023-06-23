@@ -21,6 +21,8 @@ class ChessCommandHandler(CommandHandler):
                     client_manager.unicast(room.challenger.client, ["chess", "begin"])
                 return has_begun
             if commands[1] == "move":
+                room = self.room_manager.get_room_of_client(sender)
+                room.chess_board.add_move(commands[2])
                 participants = self.room_manager.get_participants_with_client(sender)
                 if participants is not None:
                     clients = self.get_clients_from_participants(participants)
@@ -49,6 +51,9 @@ class ChessCommandHandler(CommandHandler):
                         clients = self.get_clients_from_participants(participants)
                         client_manager.broadcast(sender, clients, commands)
                 return True
+            if commands[1] == "save":
+                room = self.room_manager.get_room_of_client(sender)
+                client_manager.unicast(sender, ["chess", "save", room.chess_board.serialize()])
         return False
     
     def get_clients_from_participants(self, participants : list[Participant]):

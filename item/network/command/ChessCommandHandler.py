@@ -29,4 +29,8 @@ class ChessCommandHandler(CommandHandler):
             if commands[1] == "quit":
                 self.participant.quit()
                 return True
+            if commands[1] == "save":
+                self.participant.save(commands[2])
+                print(commands[2])
+                return True
         return False

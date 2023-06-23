@@ -9,8 +9,10 @@ from item.network.room.Participant import Participant
 from item.network.room.PieceColor import PieceColor
 from item.network.room.Role import Role
 from item.network.room.RoomDetail import RoomDetail
+from item.ui.TextButton import TextButton
 from item.ui.TextRender import TextRender
 from item.ui.popup.NotificationFinished import NotificationFinished
+from item.ui.popup.SaveMatch import SaveMatch
 
 class Room(GameObject):
     def __init__(self, participant : Participant, user_name : str):
@@ -27,6 +29,7 @@ class Room(GameObject):
         self.participant.on_restart += self.__on_restart
         # self.participant.on_quit += lambda : self.load_scene(0)
         self.participant.on_quit += lambda : self.load_scene(0)
+        self.participant.on_save += lambda json : self.instantiate(SaveMatch(json, 600, 400, p.Color(55, 56, 85, 255)))
         # self.participant.on_quit += lambda : print("test222")
 
     def __update(self):
@@ -41,6 +44,12 @@ class Room(GameObject):
             if self.finished and self.notif_popup is None:
             # self.instantiate(PromotionUI(p.Rect( 0, 0, 800, 600), p.Color(255, 255, 255, 100))))
                 self.notif_popup = self.instantiate(NotificationFinished(0,0,2, self.board.result + " wins!"), self)
+                self.save_button = self.instantiate(TextButton(p.Rect(0, 0, 100, 40), p.Color("black"), 8, "save", 36), self.notif_popup)
+                self.save_button.set_anchor((0.5, 1))
+                self.save_button.set_pivot((0.5, 1))
+                self.save_button.set_margin(bottom = 30)
+                self.save_button.change_order_layer(30)
+                self.save_button.on_mouse_down += lambda event : self.participant.client.send(["chess", "save"])
                 self.notif_popup.retry_button.set_active(False)
 
     def __on_restart(self):

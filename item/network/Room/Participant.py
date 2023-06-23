@@ -19,6 +19,7 @@ class Participant():
         self.on_restart = Event()
         self.on_quit = Event()
         self.on_receive_chat = Event()
+        self.on_save = Event()
 
     def change_role(self, new_role : Role):
         self.role = new_role
@@ -43,3 +44,6 @@ class Participant():
 
     def receive_chat(self, sender : str, message : str):
         self.on_receive_chat(sender, message)
+
+    def save(self, json : str):
+        self.on_save(json)

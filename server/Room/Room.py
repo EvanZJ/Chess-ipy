@@ -1,4 +1,5 @@
 from server.Client import Client
+from server.chess.Board import Board
 from server.room.PieceColor import PieceColor
 from server.room.Participant import Participant
 from server.room.Role import Role
@@ -10,6 +11,7 @@ class Room:
         self.challenger : Participant = None
         self.participants : list[Participant] = []
         self.participants.append(self.room_master)
+        self.chess_board : Board = Board()
         self.has_begun : bool = False
 
     def add_participant(self, participant : Participant):
