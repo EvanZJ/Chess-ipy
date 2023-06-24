@@ -21,8 +21,10 @@ class MultiplayerBoard(Board):
 
     def __awake(self):
         if self.participant.role == Role.ROOMMASTER:
-            self.__instantiate_button(p.Rect(0, 90, 220, 60), "Begin").on_mouse_down += lambda event : self.__request_begin()
-        self.__instantiate_button(p.Rect(0, 130, 220, 60), "Quit").on_mouse_down += lambda event : self.__request_quit()
+            self.begin_button = self.__instantiate_button(p.Rect(0, 90, 220, 60), "Begin")
+            self.begin_button.on_mouse_down += lambda event : self.__request_begin()
+        self.quit_button = self.__instantiate_button(p.Rect(0, 130, 220, 60), "Quit")
+        self.quit_button.on_mouse_down += lambda event : self.__request_quit()
 
     def can_move(self):
         if self.board.turn == chess.WHITE and self.participant.piece_color == PieceColor.WHITE:
@@ -32,14 +34,14 @@ class MultiplayerBoard(Board):
         return False
 
     def __instantiate_button(self, rect : p.Rect, text_str : str):
-        self.begin_button = self.instantiate(TextButton(
+        button = self.instantiate(TextButton(
             rect, 
             p.Color(255, 255, 255, 50),
             8,
             text = text_str, 
             text_size = 48
         ))
-        return self.begin_button
+        return button
 
     def __on_change_piece_color(self, new_piece_color : PieceColor):
         if self.flipped == False and new_piece_color == PieceColor.BLACK:
