@@ -2,6 +2,7 @@ from server.Client import Client
 from server.ClientManager import ClientManager
 from server.CommandHandler import CommandHandler
 from server.room.Participant import Participant
+from server.room.Role import Role
 from server.room.RoomManager import RoomManager
 
 class RoomCommandHandler(CommandHandler):
@@ -18,7 +19,10 @@ class RoomCommandHandler(CommandHandler):
                 client_manager.unicast(sender, ["room", "create", str(new_room_number)])
                 return True 
             if commands[1] == "join":
-                if self.room_manager.join_room(int(commands[2]), Participant(commands[3], sender)):
+                role = Role.PLAYER
+                if commands[4] == "watcher":
+                    role = Role.WATCHER
+                if self.room_manager.join_room(int(commands[2]), Participant(commands[3], sender, role)):
                     client_manager.unicast(sender, ["room", "join", str(commands[2])])
                     return True
                 client_manager.unicast(sender, ["room", "error", f"Room with key: {commands[2]} is not found."])

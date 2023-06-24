@@ -65,18 +65,14 @@ class Room(GameObject):
 
     def request_join(self, user_name : str, room_number : int):
         # self.participant.client.send("room join " + room_number + " " + user_name)
-        self.participant.client.send(["room", "join", room_number, user_name])
+        self.participant.client.send(["room", "join", room_number, user_name, self.participant.role.value])
 
     def create(self, room_number : int):
-        print("a")
-        self.participant.change_role(Role.ROOMMASTER)
         self.board = self.instantiate(MultiplayerBoard(self.participant))
         self.participant.change_piece_color(PieceColor.WHITE)
         self.create_room(room_number)
 
     def join(self, room_number : int):
-        print("b")
-        self.participant.change_role(Role.CHALLENGER)
         self.board = self.instantiate(MultiplayerBoard(self.participant))
         self.participant.change_piece_color(PieceColor.BLACK)
         self.create_room(room_number)

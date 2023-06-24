@@ -2,17 +2,19 @@ import pygame as p
 from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.display.ImageLoader import ImageLoader
+from item.network.room.Role import Role
 from item.ui.InputField import InputField
 from item.ui.Text import Text
 from item.ui.TextButton import TextButton
 from item.ui.button.CloseButton import CloseButton
 
 class JoinRoom(GameObject):
-    def __init__(self, width: int = 500, height: int = 600, color : p.Color = p.Color("white"), border : int = 16):
+    def __init__(self, role : Role = Role.CHALLENGER, width: int = 500, height: int = 600, color : p.Color = p.Color("white"), border : int = 16):
         super().__init__()
 
         self.inputs : list[InputField] = []
         
+        self.role = role
         self.width = width
         self.height = height
         self.color = color
@@ -49,7 +51,7 @@ class JoinRoom(GameObject):
         for input_field in self.inputs:
             input_field.on_focus += self.on_focus_input
 
-        self.__create_button("Join", 50).on_mouse_down += lambda event : self.load_scene(2, name_input.user_input, True, room_input.user_input)
+        self.__create_button("Join", 50).on_mouse_down += lambda event : self.load_scene(2, name_input.user_input, True, room_input.user_input, self.role)
         
         self.__create_close_button()
 
