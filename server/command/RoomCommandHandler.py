@@ -21,6 +21,7 @@ class RoomCommandHandler(CommandHandler):
                 if self.room_manager.join_room(int(commands[2]), Participant(commands[3], sender)):
                     client_manager.unicast(sender, ["room", "join", str(commands[2])])
                     return True
+                client_manager.unicast(sender, ["room", "error", f"Room with key: {commands[2]} is not found."])
                 return False
             if commands[1] == "release":
                 self.room_manager.release_room(int(commands[2]))

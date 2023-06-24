@@ -11,6 +11,7 @@ from item.network.room.Role import Role
 from item.network.room.RoomDetail import RoomDetail
 from item.ui.TextButton import TextButton
 from item.ui.TextRender import TextRender
+from item.ui.popup.Error import Error
 from item.ui.popup.NotificationFinished import NotificationFinished
 from item.ui.popup.SaveMatch import SaveMatch
 
@@ -79,6 +80,9 @@ class Room(GameObject):
         self.board = self.instantiate(MultiplayerBoard(self.participant))
         self.participant.change_piece_color(PieceColor.BLACK)
         self.create_room(room_number)
+
+    def error(self, error_message : str):
+        self.instantiate(Error(error_message, 600, 400, p.Color(55, 56, 85, 255)))
 
     def create_room(self, room_number : int):
         self.chat = self.instantiate(Chat(self.participant.client, self.user_name))

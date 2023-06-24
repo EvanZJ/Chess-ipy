@@ -16,4 +16,8 @@ class RoomCommandHandler(CommandHandler):
             if commands[1] == "join":
                 self.room.join(int(commands[2]))
                 return True
+            if commands[1] == "error":
+                self.room.error(commands[2])
+                print(commands[2])
+                return True
         return False
