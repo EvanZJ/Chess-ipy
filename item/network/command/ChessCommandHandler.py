@@ -8,9 +8,8 @@ class ChessCommandHandler(CommandHandler):
 
         self.participant = participant
 
-    def handle(self, command : str) -> bool:
-        commands = command.split(" ")
-        print(command)
+    def handle(self, commands : list[str]) -> bool:
+        print(commands)
         if commands[0] == "chess":
             if commands[1] == "begin":
                 self.participant.ready()
@@ -23,4 +22,15 @@ class ChessCommandHandler(CommandHandler):
                     self.participant.change_piece_color(PieceColor.WHITE)
                 elif commands[2] == "black":
                     self.participant.change_piece_color(PieceColor.BLACK)
+                return True
+            if commands[1] == "restart":
+                self.participant.restart()
+                return True
+            if commands[1] == "quit":
+                self.participant.quit()
+                return True
+            if commands[1] == "save":
+                self.participant.save(commands[2])
+                print(commands[2])
+                return True
         return False

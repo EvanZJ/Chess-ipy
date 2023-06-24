@@ -1,25 +1,23 @@
+import json
+import os
 import pygame as p
-from item.core.Event import Event
 from item.core.GameObject import GameObject
 from item.display.ImageLoader import ImageLoader
-from item.network.room.Role import Role
 from item.ui.InputField import InputField
 from item.ui.Text import Text
 from item.ui.TextButton import TextButton
 from item.ui.button.CloseButton import CloseButton
 
-class JoinRoom(GameObject):
-    def __init__(self, role : Role = Role.CHALLENGER, width: int = 500, height: int = 600, color : p.Color = p.Color("white"), border : int = 16):
+class SaveMatch(GameObject):
+    def __init__(self, json : str, width: int = 500, height: int = 600, color : p.Color = p.Color("white"), border : int = 16):
         super().__init__()
-
-        self.inputs : list[InputField] = []
         
-        self.role = role
         self.width = width
         self.height = height
         self.color = color
         self.border = border
         self.original_rect = None
+        self.json = json
 
         self.on_resize_window += self.__on_resize_window
         self.on_awake += self.__awake
@@ -38,22 +36,18 @@ class JoinRoom(GameObject):
         )
         self.original_rect.center = ImageLoader.get_instance().reference_rect.center
         self.rect = ImageLoader.resize_rect(self.original_rect)
-        self.title = self.instantiate(Text("Join Room", 48), self)
+        self.title = self.instantiate(Text("Save Match", 48), self)
         self.title.set_anchor((0.5, 0))
         self.title.set_pivot((0.5, 0))
         self.title.set_margin(top = 60)
 
-        room_input = self.__create_input_field("Room", 140)
-        self.inputs.append(room_input)
-        name_input = self.__create_input_field("Name", 200)
-        self.inputs.append(name_input)
-
-        for input_field in self.inputs:
-            input_field.on_focus += self.on_focus_input
-
-        self.__create_button("Join", 50).on_mouse_down += lambda event : self.load_scene(2, name_input.user_input, True, room_input.user_input, self.role)
+        self.name_input = self.__create_input_field("Name", 160)
+        self.create_button = self.__create_button("Save", 50)
+        self.create_button.on_mouse_down += lambda event : self.save()
         
         self.__create_close_button()
+
+        self.change_order_layer(200)
 
     def __draw(self):
         self.screen.fill((0, 0, 0))
@@ -91,8 +85,15 @@ class JoinRoom(GameObject):
         self.close_button.set_margin(top = 20, right = 20)
         self.close_button.on_mouse_down += lambda event : self.destroy()
 
-    def on_focus_input(self, focused_input_field : InputField):
-        for input_field in self.inputs:
-            if input_field == focused_input_field:
-                continue
-            input_field.set_focus(False)
+    def save(self):
+        file_name = self.name_input.user_input + ".json"
+        file_folder = "record"
+
+        if not os.path.exists(file_folder):
+            os.makedirs(file_folder)
+
+        file_path = f"{file_folder}/{file_name}"
+
+        with open(file_path, "w") as json_file:
+            json.dump(self.json, json_file)
+        self.load_scene(0)

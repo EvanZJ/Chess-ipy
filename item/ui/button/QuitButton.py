@@ -8,7 +8,7 @@ class QuitButton(ImageButton):
 
         self.on_mouse_down += self.quit
 
-    def quit(self):
+    def quit(self, event : p.event.Event):
         p.event.post(p.event.Event(p.QUIT))
 
     

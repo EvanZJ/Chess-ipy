@@ -32,6 +32,7 @@ class Engine:
         game_object.on_resize_window()
         game_object.on_awake()
         game_object.on_start()
+        game_object.set_active(True)
 
     def destroy_all(self):
         for game_objects in self.ordered_game_objects_cache.values():
@@ -72,7 +73,7 @@ class Engine:
                     # self.__on_keyboard_down(p.key.get_pressed())
                     self.__on_keyboard_down(event)
                 if event.type == p.MOUSEBUTTONDOWN or event.type == p.MOUSEBUTTONUP:
-                    self.__on_mouse(p.mouse.get_pressed(), event.type)
+                    self.__on_mouse(p.mouse.get_pressed(), event)
                 if event.type == p.VIDEORESIZE:
                     self.__resize_window(event.w, event.h)
             self.__draw()
@@ -133,7 +134,7 @@ class Engine:
                     continue
                 game_object.on_keyboard_down(event)
 
-    def __on_mouse(self, num_buttons: Literal[3], event_type : int):
+    def __on_mouse(self, num_buttons: Literal[3], event : p.event.Event):
          pos = p.mouse.get_pos()
          for game_objects in reversed(self.ordered_game_objects.values()):
             for game_object in reversed(game_objects):
@@ -142,15 +143,15 @@ class Engine:
                 if not game_object.block_raycast:
                     continue
                 if game_object.collidepoint(pos):
-                    if event_type == p.MOUSEBUTTONDOWN:
+                    if event.type == p.MOUSEBUTTONDOWN:
                         print(str(game_object) +  " mousedown")
                         self.mouse_down = True
-                        game_object.on_mouse_down()
+                        game_object.on_mouse_down(event)
                         return
                     else:
                         # print(str(game_object) +  " mouseup")
                         self.mouse_down = False
-                        game_object.on_mouse_up()
+                        game_object.on_mouse_up(event)
                         return
                     
     def __resize_window(self, new_width : int, new_height : int):

@@ -1,6 +1,7 @@
 import pygame as p
 from item.core.GameObject import GameObject
 from item.display.ImageLoader import ImageLoader
+from item.network.room.Role import Role
 from item.ui.Text import Text
 from item.ui.TextButton import TextButton
 from item.ui.button.CloseButton import CloseButton
@@ -42,10 +43,10 @@ class Room(GameObject):
         self.title.set_margin(top = 60)
 
         self.create_room_button = self.__create_button("Create Room", 200)
-        self.create_room_button.on_mouse_down += lambda : self.instantiate(CreateRoom(600, 400, p.Color(55, 56, 85, 255)))
+        self.create_room_button.on_mouse_down += lambda event : self.instantiate(CreateRoom(600, 400, p.Color(55, 56, 85, 255)))
 
         self.join_room_button = self.__create_button("Join Room", 350)
-        self.join_room_button.on_mouse_down += lambda : self.instantiate(JoinRoom(600, 400, p.Color(55, 56, 85, 255)))
+        self.join_room_button.on_mouse_down += lambda event : self.instantiate(JoinRoom(Role.CHALLENGER, 600, 400, p.Color(55, 56, 85, 255)))
         
         self.__create_close_button()
 
@@ -82,4 +83,4 @@ class Room(GameObject):
         self.close_button.set_anchor((1, 0))
         self.close_button.set_pivot((1, 0))
         self.close_button.set_margin(top = 0, right = 0)
-        self.close_button.on_mouse_down += lambda : self.set_active(False)
+        self.close_button.on_mouse_down += lambda event : self.set_active(False)

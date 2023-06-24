@@ -16,6 +16,8 @@ class InputField(TextButton):
         self.on_keyboard_down += self.__on_keyboard_down
         self.on_update += self.__update
 
+        self.on_enter = Event()
+
     def __awake(self):
         self.text.set_anchor((0, 0.5))
         self.text.set_pivot((0, 0.5))
@@ -27,6 +29,8 @@ class InputField(TextButton):
 
         if event.key == p.K_BACKSPACE:
             self.user_input = self.user_input[:-1]
+        elif event.key == p.K_RETURN:
+            self.on_enter()
         else:
             if event.unicode:
                 self.user_input += event.unicode
@@ -38,9 +42,12 @@ class InputField(TextButton):
             if not self.user_input:
                 self.text.change_text(self.placeholder)
 
-    def focus(self):
+    def focus(self, event : p.event.Event):
         self.set_focus(True)
         self.on_focus(self)
 
     def set_focus(self, value : bool):
         self.is_focus = value
+
+    def clear(self):
+        self.user_input = ""
