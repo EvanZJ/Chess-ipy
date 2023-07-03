@@ -47,7 +47,7 @@ class Game(GameObject):
             if self.load_record is not None:
                 return
             # self.instantiate(PromotionUI(p.Rect( 0, 0, 800, 600), p.Color(255, 255, 255, 100))))
-            self.notif_popup = self.instantiate(NotificationFinished(0,0,2, self.board.result + " wins!"), self)
+            self.notif_popup = self.instantiate(NotificationFinished(0,0,2, self.board.result.upper() + " wins!"), self)
             self.notif_popup.retry_button.on_mouse_down += lambda event : self.load_scene(1)
 
     def __on_keyboard_down(self, event : p.event.Event):
