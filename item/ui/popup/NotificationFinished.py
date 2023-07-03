@@ -43,12 +43,14 @@ class NotificationFinished(UI):
         self.render_text = self.instantiate(Text(self.text, 50), self)
         self.render_text.set_anchor((0.5, 0))
         self.render_text.set_pivot((0.5, 0))
-        self.render_text.set_margin(top = 50)
+        self.render_text.set_margin(top = 50, bottom = 20)
         self.render_text.change_order_layer(20)
-        self.retry_button = self.instantiate(RetryButton(960,540,1.5), self)
+
+        self.retry_button = self.instantiate(RetryButton(960,540,1.25), self)
         self.retry_button.set_anchor((0.5, 1))
         self.retry_button.set_pivot((0.5, 0.5))
         self.retry_button.set_margin(bottom = 100)
+
 
         # print(self.unmoved_rect)
 
